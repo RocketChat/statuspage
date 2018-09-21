@@ -32,7 +32,7 @@ func IndexHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"owner":           config.Config.Website.Title,
 		"backgroundColor": config.Config.Website.HeaderBgColor,
-		"logo":            "static/img/logo.png",
+		"logo":            "static/img/logo.svg",
 		"services":        services,
 		// "mostCriticalStatus": src.MostCriticalStatus(res),
 		// "incidents":          src.AggregateIncidents(inc),

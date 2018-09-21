@@ -3,7 +3,7 @@ dataPath: ./databasefiles/
 authToken: abc123def456
 website:
   title: Rocket.Chat
-  headerBgColor: "#5f5f5f"
+  headerBgColor: "#2e343e"
 services:
   - name: service1
     description: My awesome service
