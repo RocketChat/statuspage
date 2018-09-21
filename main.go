@@ -4,6 +4,7 @@ import (
 	"flag"
 
 	"github.com/RocketChat/statuspage/config"
+	"github.com/RocketChat/statuspage/core"
 	"github.com/RocketChat/statuspage/router"
 )
 
@@ -12,8 +13,11 @@ func main() {
 
 	flag.Parse()
 
-	err := config.Load(*configFile)
-	if err != nil {
+	if err := config.Load(*configFile); err != nil {
+		panic(err)
+	}
+
+	if err := core.TwistItUp(); err != nil {
 		panic(err)
 	}
 
