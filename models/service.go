@@ -16,3 +16,8 @@ type Service struct {
 	Enabled     bool      `json:"enabled"`
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
+
+const ServiceStatusOperational = "Operational"
+const ServiceStatusDegraded = "Degraded"
+const ServiceStatusPartiallyDegraded = "Partially-degraded"
+const ServiceStatusOffline = "Offline"

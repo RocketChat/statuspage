@@ -10,6 +10,8 @@ type Store interface {
 	GetIncidents(latest bool) ([]*models.Incident, error)
 	GetIncidentUpdates(id int64) ([]*models.IncidentUpdate, error)
 
+	GetServiceByName(name string) (*models.Service, error)
+
 	CreateService(service *models.Service) error
 	CreateIncident(incident *models.Incident) error
 }

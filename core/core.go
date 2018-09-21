@@ -19,5 +19,10 @@ func TwistItUp() error {
 
 	_dataStore = store
 
+	//Now that we have a store, let's ensure the services from the config exist
+	if err := createServicesFromConfig(); err != nil {
+		log.Fatalln(err)
+	}
+
 	return nil
 }
