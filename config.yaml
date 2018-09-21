@@ -1,5 +1,6 @@
 # We should probably not include this
 dataPath: ./databasefiles/
+authToken: abc123def456
 website:
   title: Rocket.Chat
   headerBgColor: "#5f5f5f"

@@ -13,9 +13,10 @@ import (
 var Config *config
 
 type config struct {
-	DataPath string          `yaml:"dataPath" json:"dataPath"`
-	Website  websiteConfig   `yaml:"website" json:"website"`
-	Services []serviceConfig `yaml:"services" json:"services"`
+	DataPath  string          `yaml:"dataPath" json:"dataPath"`
+	AuthToken string          `yaml:"authToken" json:"authToken"`
+	Website   websiteConfig   `yaml:"website" json:"website"`
+	Services  []serviceConfig `yaml:"services" json:"services"`
 }
 
 type websiteConfig struct {

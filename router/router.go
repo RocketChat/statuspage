@@ -26,7 +26,7 @@ func Start() error {
 	v1 := router.Group("/api").Group("/v1")
 
 	v1.GET("/services", v1c.ServicesGet)
-	v1.GET("/incidents", middleware.NotImplemented)
+	v1.GET("/incidents", v1c.IncidentsGet)
 	v1.GET("/incidents/:id/updates", middleware.NotImplemented)
 
 	v1.Use(middleware.IsAuthorized)
