@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/RocketChat/statuspage/config"
-	"github.com/RocketChat/statuspage/controllers"
+	v1c "github.com/RocketChat/statuspage/controllers/v1"
 	"github.com/RocketChat/statuspage/router/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -19,13 +19,13 @@ func Start() error {
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*")
 
-	router.GET("/", controllers.IndexHandler)
+	router.GET("/", v1c.IndexHandler)
 
 	router.GET("/config", ShowConfig)
 
 	v1 := router.Group("/api").Group("/v1")
 
-	v1.GET("/services", middleware.NotImplemented)
+	v1.GET("/services", v1c.ServicesGet)
 	v1.GET("/incidents", middleware.NotImplemented)
 	v1.GET("/incidents/:id/updates", middleware.NotImplemented)
 

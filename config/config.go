@@ -1,8 +1,10 @@
 package config
 
 import (
+	"errors"
 	"io/ioutil"
 	"log"
+	"strings"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -35,9 +37,25 @@ func (c *config) Load(filePath string) error {
 	return nil
 }
 
+func (c *config) VerifySettings() error {
+	if c.DataPath == "" {
+		return errors.New("invalid dataPath, can not be empty")
+	}
+
+	if !strings.HasSuffix(c.DataPath, "/") {
+		return errors.New("dataPath must end with '/'")
+	}
+
+	return nil
+}
+
 //Load tries to load the configuration file
 func Load(filePath string) error {
 	Config = new(config)
 
-	return Config.Load(filePath)
+	if err := Config.Load(filePath); err != nil {
+		return err
+	}
+
+	return Config.VerifySettings()
 }

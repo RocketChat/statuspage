@@ -6,7 +6,10 @@ import (
 
 //Store is an interface that the storage implementers should implement
 type Store interface {
-	GetServices() ([]models.Service, error)
-	GetIncidents(latest bool) ([]models.Incident, error)
-	GetIncidentUpdates(id int64) ([]models.IncidentUpdate, error)
+	GetServices() ([]*models.Service, error)
+	GetIncidents(latest bool) ([]*models.Incident, error)
+	GetIncidentUpdates(id int64) ([]*models.IncidentUpdate, error)
+
+	CreateService(service *models.Service) error
+	CreateIncident(incident *models.Incident) error
 }
