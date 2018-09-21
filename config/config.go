@@ -14,7 +14,13 @@ var Config *config
 
 type config struct {
 	DataPath string          `yaml:"dataPath" json:"dataPath"`
+	Website  websiteConfig   `yaml:"website" json:"website"`
 	Services []serviceConfig `yaml:"services" json:"services"`
+}
+
+type websiteConfig struct {
+	HeaderBgColor string `yaml:"headerBgColor" json:"headerBgColor"`
+	Title         string `yaml:"title" json:"title"`
 }
 
 type serviceConfig struct {

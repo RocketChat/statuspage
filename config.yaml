@@ -1,5 +1,8 @@
 # We should probably not include this
 dataPath: ./databasefiles/
+website:
+  title: Rocket.Chat
+  headerBgColor: "#5f5f5f"
 services:
   - name: service1
     description: My awesome service

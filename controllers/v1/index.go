@@ -3,6 +3,8 @@ package v1
 import (
 	"net/http"
 
+	"github.com/RocketChat/statuspage/config"
+	"github.com/RocketChat/statuspage/core"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,10 +13,12 @@ func IndexHandler(c *gin.Context) {
 	// services := c.Keys["services"].(src.Services)
 	// incidents := c.Keys["incidents"].(src.Incidents)
 
-	// res, err := services.GetServices()
-	// if err != nil {
-	// 	panic(err)
-	// }
+	services, err := core.GetServices()
+	if err != nil {
+		//TODO: fall back to the configuration
+		internalErrorHandler(c, err)
+		return
+	}
 
 	// inc, err := incidents.GetLatestIncidents()
 	// if err != nil {
@@ -37,10 +41,10 @@ func IndexHandler(c *gin.Context) {
 	// }
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"owner":           "Rocket.Chat",
-		"backgroundColor": "#343434",
-		// "logo":               logo,
-		// "services":           src.AggregateServices(res),
+		"owner":           config.Config.Website.Title,
+		"backgroundColor": config.Config.Website.HeaderBgColor,
+		"logo":            "static/img/logo.png",
+		"services":        services,
 		// "mostCriticalStatus": src.MostCriticalStatus(res),
 		// "incidents":          src.AggregateIncidents(inc),
 	})
