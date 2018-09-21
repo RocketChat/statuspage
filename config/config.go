@@ -7,27 +7,27 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+//Config contains a reference to the configuration
 var Config *config
 
 type config struct {
-	DataPath string          `yaml:"dataPath"`
-	Services []serviceConfig `yaml:"services"`
+	DataPath string          `yaml:"dataPath" json:"dataPath"`
+	Services []serviceConfig `yaml:"services" json:"services"`
 }
 
 type serviceConfig struct {
-	Name        string `yaml:"name"`
-	Description string `yaml:"description"`
+	Name        string `yaml:"name" json:"name"`
+	Description string `yaml:"description" json:"description"`
 }
 
 func (c *config) Load(filePath string) error {
-
 	yamlFile, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		log.Printf("yamlFile.Get err   #%v ", err)
 		return err
 	}
-	err = yaml.Unmarshal(yamlFile, c)
-	if err != nil {
+
+	if err = yaml.Unmarshal(yamlFile, c); err != nil {
 		log.Fatalf("Unmarshal: %v", err)
 		return err
 	}
@@ -35,12 +35,9 @@ func (c *config) Load(filePath string) error {
 	return nil
 }
 
+//Load tries to load the configuration file
 func Load(filePath string) error {
 	Config = new(config)
-	err := Config.Load(filePath)
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return Config.Load(filePath)
 }

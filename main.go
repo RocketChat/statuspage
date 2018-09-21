@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	configFile := flag.String("configFile", "config.yaml", "Config File full path.  Defaults to current folder")
+	configFile := flag.String("configFile", "config.yaml", "Config File full path. Defaults to current folder")
 
 	flag.Parse()
 

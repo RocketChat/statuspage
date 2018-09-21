@@ -1,62 +1,49 @@
 package router
 
 import (
-	"net/http"
-
 	"github.com/RocketChat/statuspage/config"
+	"github.com/RocketChat/statuspage/controllers"
+	"github.com/RocketChat/statuspage/router/middleware"
 	"github.com/gin-gonic/gin"
 )
 
-func IndexHandler(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		/*"owner":              owner,
-		"backgroundColor":    color,
-		"logo":               logo,
-		"services":           src.AggregateServices(res),
-		"mostCriticalStatus": src.MostCriticalStatus(res),
-		"incidents":          src.AggregateIncidents(inc),*/
-	})
-}
-
-func NotImplemented(c *gin.Context) {
-	c.AbortWithStatus(501)
-}
-
-// Just a temporary route
+//ShowConfig is just a temporary route
 func ShowConfig(c *gin.Context) {
 	c.JSON(200, config.Config)
 }
 
-func Start() {
-	gin.SetMode(gin.ReleaseMode)
-
+//Start configures the routes and their handlers plus starts routing
+func Start() error {
 	router := gin.Default()
 
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*")
 
-	router.GET("/", IndexHandler)
+	router.GET("/", controllers.IndexHandler)
 
 	router.GET("/config", ShowConfig)
 
-	api := router.Group("/api")
+	v1 := router.Group("/api").Group("/v1")
+
+	v1.GET("/services", middleware.NotImplemented)
+	v1.GET("/incidents", middleware.NotImplemented)
+	v1.GET("/incidents/:id/updates", middleware.NotImplemented)
+
+	v1.Use(middleware.IsAuthorized)
 	{
-		api.GET("/services", NotImplemented)
-		api.POST("/services", NotImplemented)
-		api.GET("/services/:id", NotImplemented)
-		api.PATCH("/services/:id", NotImplemented)
-		api.DELETE("/services/:id", NotImplemented)
+		v1.POST("/services", middleware.NotImplemented)
+		v1.GET("/services/:id", middleware.NotImplemented)
+		v1.PATCH("/services/:id", middleware.NotImplemented)
+		v1.DELETE("/services/:id", middleware.NotImplemented)
 
-		api.GET("/incidents", NotImplemented)
-		api.POST("/incidents", NotImplemented)
-		api.GET("/incidents/:id", NotImplemented)
-		api.DELETE("/incidents/:id", NotImplemented)
+		v1.POST("/incidents", middleware.NotImplemented)
+		v1.GET("/incidents/:id", middleware.NotImplemented)
+		v1.DELETE("/incidents/:id", middleware.NotImplemented)
 
-		api.GET("/incidents/:id/updates", NotImplemented)
-		api.POST("/incidents/:id/updates", NotImplemented)
-		api.GET("/incidents/:id/updates/:updateId", NotImplemented)
-		api.DELETE("/incidents/:id/updates/:updateId", NotImplemented)
+		v1.POST("/incidents/:id/updates", middleware.NotImplemented)
+		v1.GET("/incidents/:id/updates/:updateId", middleware.NotImplemented)
+		v1.DELETE("/incidents/:id/updates/:updateId", middleware.NotImplemented)
 	}
 
-	router.Run(":5000")
+	return router.Run(":5000")
 }
