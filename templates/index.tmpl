@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Status &bullet; {{ .owner }}</title>
+    <link rel="icon" type="image/png" href="static/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/app.css" />
+    <link rel="stylesheet" href="static/css/font-awesome.min.css">
+
+    <style>
+        .header {
+            background-color: {{ .backgroundColor }};
+        }
+    </style>
+</head>
+<body>
+    <div class="header"></div>
+    <div class="page">
+        <div class="spacer">
+
+            <div class="flex row">
+                <img class="logo" src="{{ .logo }}" />
+            </div>
+
+            <div class="info-header">
+
+
+                {{ if eq .mostCriticalStatus 0 }}
+                    <div class="notification success">
+                        <h1>All Systems Operational</h1>
+                    </div>
+                {{ else if eq .mostCriticalStatus 1 }}
+                    <div class="notification info">
+                        <h1>Performance Issues on some services</h1>
+                    </div>
+                {{ else if eq .mostCriticalStatus 2 }}
+                    <div class="notification warning">
+                        <h1>Partial Outage on some services</h1>
+                    </div>
+                {{ else if eq .mostCriticalStatus 3 }}
+                    <div class="notification critical">
+                        <h1>Major Outage on some services</h1>
+                    </div>
+                {{ end }}
+
+            </div>
+
+            <div class="main flex row wrap">
+
+                <div class="incidents">
+                    <div class="line">
+                        <h2>Incidents</h2>
+                    </div>
+
+                    {{ range $index, $aggregatedIncident := .incidents }}
+                        {{ $length := len $aggregatedIncident.Incidents }}
+                        {{ if eq $length 0 }}
+                            <div class="line empty">
+                                {{ $aggregatedIncident.Time.Format "Jan 02" }}
+                            </div>
+                        {{ else }}
+                            <div class="line">
+                                <div class="flex row">
+                                    <span class="date">{{ $aggregatedIncident.Time.Format "Jan 02" }}</span>
+                                    <div class="content">
+                                        {{ range $incident := $aggregatedIncident.Incidents }}
+                                            <h3>{{ $incident.Title }}</h3>
+
+                                            {{ range $update := $incident.Updates }}
+                                                <p><b>{{ $update.Time.Format "15:04"}} {{ $update.Status }}</b> - {{$update.Message}}</p>
+                                            {{ end }}
+                                        {{ end }}
+                                    </div>
+                                </div>
+                            </div>
+                        {{ end }}
+                    {{ end }}
+
+                </div>
+
+                <div class="services">
+
+                    {{ $success := "fa-check-circle success" }}
+                    {{ $info := "fa-info-circle info" }}
+                    {{ $warning := "fa-exclamation-circle warning" }}
+                    {{ $critical := "fa-times-circle critical" }}
+
+                    {{ range $group, $services := .services }}
+
+                        <div class="group">
+                            <div class="line">
+                                <h2>{{ $group }}</h2>
+                            </div>
+
+                            {{ range $service := $services }}
+
+                                <div class="line">
+                                    <p>
+                                        {{ $service.Name }} - {{ $service.Status }}
+                                        <span class="
+                                            fa indicator
+                                            {{ if eq $service.Status "Operational" }}
+                                                {{ $success }}
+                                            {{ else if eq $service.Status "Performance Issues" }}
+                                                {{ $info }}
+                                            {{ else if eq $service.Status "Partial Outage" }}
+                                                {{ $warning }}
+                                            {{ else if eq $service.Status "Major Outage" }}
+                                                {{ $critical }}
+                                            {{ end }}
+                                        "></span>
+                                    </p>
+                                </div>
+
+                            {{ end }}
+
+                        </div>
+
+                    {{ end }}
+
+                </div>
+
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="flex row justify-end">
+                <p class="footer">Powered by <a href="https://github.com/eirsyl/statuspage">Statuspage</a></p>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+</html>

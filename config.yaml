@@ -1,0 +1,7 @@
+# We should probably not include this
+dataPath: ./hello/
+services:
+  - name: service1
+    description: My awesome service
+  - name: service2
+    description: My second awesome service
