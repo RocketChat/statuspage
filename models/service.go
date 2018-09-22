@@ -28,3 +28,6 @@ const ServiceStatusPartialOutage = "Partial-outage"
 
 //ServiceStatusOutage - Outage
 const ServiceStatusOutage = "Outage"
+
+//ServiceStatusScheduledMaintenance - Scheduled Maintenance
+const ServiceStatusScheduledMaintenance = "Scheduled Maintenance"
