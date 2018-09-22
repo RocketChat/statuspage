@@ -17,7 +17,14 @@ type Service struct {
 	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
+//ServiceStatusOperational - Everything is good
 const ServiceStatusOperational = "Operational"
+
+//ServiceStatusDegraded - Degraded Performance
 const ServiceStatusDegraded = "Degraded"
-const ServiceStatusPartiallyDegraded = "Partially-degraded"
-const ServiceStatusOffline = "Offline"
+
+//ServiceStatusPartialOutage - Partial Outage
+const ServiceStatusPartialOutage = "Partial-outage"
+
+//ServiceStatusOutage - Outage
+const ServiceStatusOutage = "Outage"

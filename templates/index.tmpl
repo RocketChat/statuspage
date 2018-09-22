@@ -87,39 +87,27 @@
                     {{ $warning := "fa-exclamation-circle warning" }}
                     {{ $critical := "fa-times-circle critical" }}
 
-                    {{ range $group, $services := .services }}
+                    {{ range $service := .services }}
 
-                        <div class="group">
-                            <div class="line">
-                                <h2>{{ $group }}</h2>
-                            </div>
-
-                            {{ range $service := $services }}
-
-                                <div class="line">
-                                    <p>
-                                        {{ $service.Name }} - {{ $service.Status }}
-                                        <span class="
-                                            fa indicator
-                                            {{ if eq $service.Status "Operational" }}
-                                                {{ $success }}
-                                            {{ else if eq $service.Status "Performance Issues" }}
-                                                {{ $info }}
-                                            {{ else if eq $service.Status "Partial Outage" }}
-                                                {{ $warning }}
-                                            {{ else if eq $service.Status "Major Outage" }}
-                                                {{ $critical }}
-                                            {{ end }}
-                                        "></span>
-                                    </p>
-                                </div>
-
-                            {{ end }}
-
+                        <div class="line">
+                            <p>
+                                {{ $service.Name }} - {{ $service.Status }}
+                                <span class="
+                                    fa indicator
+                                    {{ if eq $service.Status "Operational" }}
+                                        {{ $success }}
+                                    {{ else if eq $service.Status "Degraded" }}
+                                        {{ $info }}
+                                    {{ else if eq $service.Status "Partial-outage" }}
+                                        {{ $warning }}
+                                    {{ else if eq $service.Status "Outage" }}
+                                        {{ $critical }}
+                                    {{ end }}
+                                "></span>
+                            </p>
                         </div>
 
                     {{ end }}
-
                 </div>
 
             </div>

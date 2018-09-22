@@ -3,6 +3,8 @@ package v1
 import (
 	"net/http"
 
+	"github.com/RocketChat/statuspage/models"
+
 	"github.com/RocketChat/statuspage/config"
 	"github.com/RocketChat/statuspage/core"
 	"github.com/gin-gonic/gin"
@@ -30,11 +32,11 @@ func IndexHandler(c *gin.Context) {
 	// }
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"owner":           config.Config.Website.Title,
-		"backgroundColor": config.Config.Website.HeaderBgColor,
-		"logo":            "static/img/logo.svg",
-		"services":        services,
-		// "mostCriticalStatus": src.MostCriticalStatus(res),
-		// "incidents":          src.AggregateIncidents(inc),
+		"owner":              config.Config.Website.Title,
+		"backgroundColor":    config.Config.Website.HeaderBgColor,
+		"logo":               "static/img/logo.svg",
+		"services":           services,
+		"mostCriticalStatus": 0, // Might need to just remove this.  Not sure if will be useful or not
+		"incidents":          []models.Incident{},
 	})
 }
