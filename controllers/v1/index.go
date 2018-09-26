@@ -58,7 +58,7 @@ func handleIndexPageLoadingFromConfig(c *gin.Context) {
 		"cacheBreaker":       config.Config.Website.CacheBreaker,
 		"logo":               "static/img/logo.svg",
 		"services":           services,
-		"mostCriticalStatus": 5,
-		"incidents":          []models.Incident{},
+		"mostCriticalStatus": models.ServiceStatusValues["Unknown"],
+		"incidents":          core.AggregateIncidents(make([]*models.Incident, 0)),
 	})
 }
