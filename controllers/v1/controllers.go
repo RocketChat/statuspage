@@ -2,6 +2,7 @@ package v1
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,5 +10,11 @@ import (
 func internalErrorHandler(c *gin.Context, err error) {
 	log.Println(err)
 
-	c.JSON(500, gin.H{"error": "internal error"})
+	c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error"})
+}
+
+func internalErrorHandlerDetailed(c *gin.Context, err error) {
+	log.Println(err)
+
+	c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error", "details": err.Error()})
 }

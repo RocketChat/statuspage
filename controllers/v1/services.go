@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"net/http"
+
 	"github.com/RocketChat/statuspage/core"
 	"github.com/gin-gonic/gin"
 )
@@ -13,5 +15,5 @@ func ServicesGet(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, services)
+	c.JSON(http.StatusOK, services)
 }

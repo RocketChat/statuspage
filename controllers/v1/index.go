@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/RocketChat/statuspage/models"
@@ -12,31 +13,52 @@ import (
 
 //IndexHandler is the html controller for sending the html dashboard
 func IndexHandler(c *gin.Context) {
-	// incidents := c.Keys["incidents"].(src.Incidents)
-
 	services, err := core.GetServices()
 	if err != nil {
-		//TODO: fall back to the configuration
-		internalErrorHandler(c, err)
+		log.Println("Error while getting the services:")
+		log.Println(err)
+		handleIndexPageLoadingFromConfig(c)
 		return
 	}
 
-	// inc, err := incidents.GetLatestIncidents()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// logo := os.Getenv("SITE_LOGO")
-	// if logo == "" {
-	// 	logo = "static/img/logo.png"
-	// }
+	incidents, err := core.GetIncidents(true)
+	if err != nil {
+		log.Println("Error while getting the incidents:")
+		log.Println(err)
+		handleIndexPageLoadingFromConfig(c)
+		return
+	}
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"owner":              config.Config.Website.Title,
 		"backgroundColor":    config.Config.Website.HeaderBgColor,
+		"cacheBreaker":       config.Config.Website.CacheBreaker,
 		"logo":               "static/img/logo.svg",
 		"services":           services,
-		"mostCriticalStatus": 0, // Might need to just remove this.  Not sure if will be useful or not
+		"mostCriticalStatus": core.MostCriticalServiceStatus(services),
+		"incidents":          core.AggregateIncidents(incidents),
+	})
+}
+
+func handleIndexPageLoadingFromConfig(c *gin.Context) {
+	services := make([]*models.Service, 0)
+	for _, s := range config.Config.Services {
+		service := &models.Service{
+			Name:        s.Name,
+			Description: s.Description,
+			Status:      models.ServiceStatusUnknown,
+		}
+
+		services = append(services, service)
+	}
+
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		"owner":              config.Config.Website.Title,
+		"backgroundColor":    config.Config.Website.HeaderBgColor,
+		"cacheBreaker":       config.Config.Website.CacheBreaker,
+		"logo":               "static/img/logo.svg",
+		"services":           services,
+		"mostCriticalStatus": 5,
 		"incidents":          []models.Incident{},
 	})
 }

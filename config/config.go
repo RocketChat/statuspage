@@ -20,8 +20,10 @@ type config struct {
 }
 
 type websiteConfig struct {
-	HeaderBgColor string `yaml:"headerBgColor" json:"headerBgColor"`
-	Title         string `yaml:"title" json:"title"`
+	HeaderBgColor   string `yaml:"headerBgColor" json:"headerBgColor"`
+	Title           string `yaml:"title" json:"title"`
+	CacheBreaker    string `yaml:"cacheBreaker" json:"cacheBreaker"`
+	DaysToAggregate int    `yaml:"daysToAggregate" json:"daysToAggregate"`
 }
 
 type serviceConfig struct {

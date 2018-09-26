@@ -31,3 +31,16 @@ const ServiceStatusOutage = "Outage"
 
 //ServiceStatusScheduledMaintenance - Scheduled Maintenance
 const ServiceStatusScheduledMaintenance = "Scheduled Maintenance"
+
+//ServiceStatusUnknown - Unknown - used when the services were loaded from config
+const ServiceStatusUnknown = "Unknown"
+
+//ServiceStatusValues holds the names to numbers for values of the status
+var ServiceStatusValues = map[string]int{
+	"Operational":           0,
+	"Degraded":              1,
+	"Partial-outage":        2,
+	"Outage":                3,
+	"Scheduled Maintenance": 4,
+	"Unknown":               5,
+}

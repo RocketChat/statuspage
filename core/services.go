@@ -15,6 +15,25 @@ func GetServiceByName(name string) (*models.Service, error) {
 	return _dataStore.GetServiceByName(name)
 }
 
+//CreateService creates the service in the storage layer
+func CreateService(service *models.Service) error {
+	return _dataStore.CreateService(service)
+}
+
+//MostCriticalServiceStatus returns the most critical service number of the services provided
+func MostCriticalServiceStatus(services []*models.Service) int {
+	mostCritical := 0
+
+	for _, service := range services {
+		serviceStatus := models.ServiceStatusValues[service.Status]
+		if serviceStatus > mostCritical {
+			mostCritical = serviceStatus
+		}
+	}
+
+	return mostCritical
+}
+
 func createServicesFromConfig() error {
 	for _, s := range config.Config.Services {
 		service, err := GetServiceByName(s.Name)
@@ -34,7 +53,7 @@ func createServicesFromConfig() error {
 			Tags:        make([]string, 0),
 		}
 
-		if err := _dataStore.CreateService(toCreate); err != nil {
+		if err := CreateService(toCreate); err != nil {
 			return err
 		}
 	}

@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" href="static/img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/app.css" />
+    <link rel="stylesheet" href="static/css/app.css?v={{ .cacheBreaker }}" />
     <link rel="stylesheet" href="static/css/font-awesome.min.css">
 
     <style>
@@ -19,14 +19,11 @@
     <div class="header"></div>
     <div class="page">
         <div class="spacer">
-
             <div class="flex row">
                 <img class="logo" src="{{ .logo }}" />
             </div>
 
             <div class="info-header">
-
-
                 {{ if eq .mostCriticalStatus 0 }}
                     <div class="notification success">
                         <h1>All Systems Operational</h1>
@@ -43,12 +40,18 @@
                     <div class="notification critical">
                         <h1>Major Outage on some services</h1>
                     </div>
+                {{ else if eq .mostCriticalStatus 4 }}
+                    <div class="notification info">
+                        <h1>Schedule maintenance on some services</h1>
+                    </div>
+                {{ else if eq .mostCriticalStatus 5 }}
+                    <div class="notification info">
+                        <h1>Failed to load the status for the services</h1>
+                    </div>
                 {{ end }}
-
             </div>
 
             <div class="main flex row wrap">
-
                 <div class="incidents">
                     <div class="line">
                         <h2>Incidents</h2>
@@ -81,41 +84,48 @@
                 </div>
 
                 <div class="services">
-
-                    {{ $success := "fa-check-circle success" }}
-                    {{ $info := "fa-info-circle info" }}
-                    {{ $warning := "fa-exclamation-circle warning" }}
-                    {{ $critical := "fa-times-circle critical" }}
-
-                    {{ range $service := .services }}
-
+                    <div class="group">
                         <div class="line">
-                            <p>
-                                {{ $service.Name }} - {{ $service.Status }}
-                                <span class="
-                                    fa indicator
-                                    {{ if eq $service.Status "Operational" }}
-                                        {{ $success }}
-                                    {{ else if eq $service.Status "Degraded" }}
-                                        {{ $info }}
-                                    {{ else if eq $service.Status "Partial-outage" }}
-                                        {{ $warning }}
-                                    {{ else if eq $service.Status "Outage" }}
-                                        {{ $critical }}
-                                    {{ end }}
-                                "></span>
-                            </p>
+                            <h2>Rocket.Chat</h2>
                         </div>
 
-                    {{ end }}
-                </div>
+                        {{ $success := "fa-check-circle success" }}
+                        {{ $info := "fa-info-circle info" }}
+                        {{ $warning := "fa-exclamation-circle warning" }}
+                        {{ $critical := "fa-times-circle critical" }}
+                        {{ $unknown := "fa-question-circle info" }}
 
+                        {{ range $service := .services }}
+                            <div class="line">
+                                <p>
+                                    {{ $service.Name }} - {{ $service.Status }}
+                                    <span class="
+                                        fa indicator
+                                        {{ if eq $service.Status "Operational" }}
+                                            {{ $success }}
+                                        {{ else if eq $service.Status "Degraded" }}
+                                            {{ $info }}
+                                        {{ else if eq $service.Status "Partial-outage" }}
+                                            {{ $warning }}
+                                        {{ else if eq $service.Status "Outage" }}
+                                            {{ $critical }}
+                                        {{ else if eq $service.Status "Scheduled Maintenance" }}
+                                            {{ $info }}
+                                        {{ else if eq $service.Status "Unknown" }}
+                                            {{ $unknown }}
+                                        {{ end }}
+                                    "></span>
+                                </p>
+                            </div>
+                        {{ end }}
+                    </div>
+                </div>
             </div>
 
             <div class="hr"></div>
 
             <div class="flex row justify-end">
-                <p class="footer">Powered by <a href="https://github.com/eirsyl/statuspage">Statuspage</a></p>
+                <p class="footer">Follow our Twitter: <a href="https://twitter.com/RocketChatCloud">@RocketChatCloud</a></p>
             </div>
         </div>
     </div>

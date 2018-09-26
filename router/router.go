@@ -36,9 +36,9 @@ func Start() error {
 		v1.PATCH("/services/:id", middleware.NotImplemented)
 		v1.DELETE("/services/:id", middleware.NotImplemented)
 
-		v1.POST("/incidents", middleware.NotImplemented)
-		v1.GET("/incidents/:id", middleware.NotImplemented)
-		v1.DELETE("/incidents/:id", middleware.NotImplemented)
+		v1.POST("/incidents", v1c.IncidentCreate)
+		v1.GET("/incidents/:id", v1c.IncidentUpdate)
+		v1.DELETE("/incidents/:id", v1c.IncidentDelete)
 
 		v1.POST("/incidents/:id/updates", middleware.NotImplemented)
 		v1.GET("/incidents/:id/updates/:updateId", middleware.NotImplemented)

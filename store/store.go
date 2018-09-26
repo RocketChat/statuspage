@@ -14,4 +14,8 @@ type Store interface {
 
 	CreateService(service *models.Service) error
 	CreateIncident(incident *models.Incident) error
+
+	UpdateIncident(incident *models.Incident) error
+
+	DeleteIncident(id int) error
 }
