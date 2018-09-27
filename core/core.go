@@ -3,8 +3,8 @@ package core
 import (
 	"log"
 
-	"github.com/RocketChat/statuspage/store"
-	"github.com/RocketChat/statuspage/store/boltstore"
+	"github.com/RocketChat/statuscentral/store"
+	"github.com/RocketChat/statuscentral/store/boltstore"
 )
 
 var _dataStore store.Store

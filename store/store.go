@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/RocketChat/statuspage/models"
+	"github.com/RocketChat/statuscentral/models"
 )
 
 //Store is an interface that the storage implementers should implement

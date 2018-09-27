@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/RocketChat/statuspage/config"
+	"github.com/RocketChat/statuscentral/config"
 	"github.com/gin-gonic/gin"
 )
 

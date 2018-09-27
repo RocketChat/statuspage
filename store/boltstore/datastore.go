@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/RocketChat/statuspage/config"
-	"github.com/RocketChat/statuspage/store"
+	"github.com/RocketChat/statuscentral/config"
+	"github.com/RocketChat/statuscentral/store"
 	bolt "github.com/etcd-io/bbolt"
 )
 
@@ -26,7 +26,7 @@ func New() (store.Store, error) {
 		return nil, errors.New("configuration doesn't seem to exist")
 	}
 
-	db, err := bolt.Open(fmt.Sprintf("%s%s", config.Config.DataPath, "statuspage.bbolt"), 0600, &bolt.Options{Timeout: 15 * time.Second})
+	db, err := bolt.Open(fmt.Sprintf("%s%s", config.Config.DataPath, "statuscentral.bbolt"), 0600, &bolt.Options{Timeout: 15 * time.Second})
 	if err != nil {
 		return nil, err
 	}

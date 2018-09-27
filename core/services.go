@@ -1,8 +1,8 @@
 package core
 
 import (
-	"github.com/RocketChat/statuspage/config"
-	"github.com/RocketChat/statuspage/models"
+	"github.com/RocketChat/statuscentral/config"
+	"github.com/RocketChat/statuscentral/models"
 )
 
 //GetServices gets all of the services from the storage layer
