@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/RocketChat/statuspage/core"
-	"github.com/RocketChat/statuspage/models"
+	"github.com/RocketChat/statuscentral/core"
+	"github.com/RocketChat/statuscentral/models"
 	"github.com/gin-gonic/gin"
 )
 

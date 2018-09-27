@@ -4,10 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/RocketChat/statuspage/models"
+	"github.com/RocketChat/statuscentral/models"
 
-	"github.com/RocketChat/statuspage/config"
-	"github.com/RocketChat/statuspage/core"
+	"github.com/RocketChat/statuscentral/config"
+	"github.com/RocketChat/statuscentral/core"
 	"github.com/gin-gonic/gin"
 )
 

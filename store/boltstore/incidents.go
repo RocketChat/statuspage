@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/RocketChat/statuspage/config"
-	"github.com/RocketChat/statuspage/models"
+	"github.com/RocketChat/statuscentral/config"
+	"github.com/RocketChat/statuscentral/models"
 	bolt "github.com/etcd-io/bbolt"
 )
 

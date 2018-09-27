@@ -3,7 +3,7 @@ package v1
 import (
 	"net/http"
 
-	"github.com/RocketChat/statuspage/core"
+	"github.com/RocketChat/statuscentral/core"
 	"github.com/gin-gonic/gin"
 )
 

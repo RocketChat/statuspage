@@ -1,9 +1,9 @@
 package router
 
 import (
-	"github.com/RocketChat/statuspage/config"
-	v1c "github.com/RocketChat/statuspage/controllers/v1"
-	"github.com/RocketChat/statuspage/router/middleware"
+	"github.com/RocketChat/statuscentral/config"
+	v1c "github.com/RocketChat/statuscentral/controllers/v1"
+	"github.com/RocketChat/statuscentral/router/middleware"
 	"github.com/gin-gonic/gin"
 )
 

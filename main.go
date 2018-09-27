@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 
-	"github.com/RocketChat/statuspage/config"
-	"github.com/RocketChat/statuspage/core"
-	"github.com/RocketChat/statuspage/router"
+	"github.com/RocketChat/statuscentral/config"
+	"github.com/RocketChat/statuscentral/core"
+	"github.com/RocketChat/statuscentral/router"
 )
 
 func main() {

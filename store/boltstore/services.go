@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/RocketChat/statuspage/models"
+	"github.com/RocketChat/statuscentral/models"
 )
 
 func (s *boltStore) GetServices() ([]*models.Service, error) {
