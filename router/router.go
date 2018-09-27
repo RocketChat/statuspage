@@ -26,7 +26,7 @@ func Start() error {
 	v1 := router.Group("/api").Group("/v1")
 
 	v1.GET("/services", v1c.ServicesGet)
-	v1.GET("/incidents", v1c.IncidentsGet)
+	v1.GET("/incidents", v1c.IncidentsGetAll)
 	v1.GET("/incidents/:id/updates", middleware.NotImplemented)
 
 	v1.Use(middleware.IsAuthorized)
@@ -37,10 +37,10 @@ func Start() error {
 		v1.DELETE("/services/:id", middleware.NotImplemented)
 
 		v1.POST("/incidents", v1c.IncidentCreate)
-		v1.GET("/incidents/:id", v1c.IncidentUpdate)
+		v1.GET("/incidents/:id", v1c.IncidentGetOne)
 		v1.DELETE("/incidents/:id", v1c.IncidentDelete)
 
-		v1.POST("/incidents/:id/updates", middleware.NotImplemented)
+		v1.POST("/incidents/:id/updates", v1c.IncidentUpdateCreate)
 		v1.GET("/incidents/:id/updates/:updateId", middleware.NotImplemented)
 		v1.DELETE("/incidents/:id/updates/:updateId", middleware.NotImplemented)
 	}

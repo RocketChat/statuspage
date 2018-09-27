@@ -8,12 +8,13 @@ import (
 type Store interface {
 	GetServices() ([]*models.Service, error)
 	GetIncidents(latest bool) ([]*models.Incident, error)
-	GetIncidentUpdates(id int64) ([]*models.IncidentUpdate, error)
 
 	GetServiceByName(name string) (*models.Service, error)
+	GetIncidentByID(id int) (*models.Incident, error)
 
 	CreateService(service *models.Service) error
 	CreateIncident(incident *models.Incident) error
+	CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) error
 
 	UpdateIncident(incident *models.Incident) error
 

@@ -31,3 +31,13 @@ const IncidentStatusResolved = "Resolved"
 
 //IncidentDefaultStatus is the default status of an incident
 const IncidentDefaultStatus = IncidentStatusInvestigating
+
+//IncidentStatuses holds all of the valid incident statuses
+var IncidentStatuses = map[string]string{
+	"investigating": "Investigating",
+	"identified":    "Identified",
+	"update":        "Update",
+	"monitoring":    "Monitoring",
+	"resolved":      "Resolved",
+	"default":       IncidentDefaultStatus,
+}

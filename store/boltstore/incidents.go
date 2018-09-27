@@ -41,6 +41,26 @@ func (s *boltStore) GetIncidents(latest bool) ([]*models.Incident, error) {
 	return incidents, nil
 }
 
+func (s *boltStore) GetIncidentByID(id int) (*models.Incident, error) {
+	tx, err := s.Begin(false)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	bytes := tx.Bucket(incidentBucket).Get(itob(id))
+	if bytes == nil {
+		return nil, nil
+	}
+
+	var i models.Incident
+	if err := json.Unmarshal(bytes, &i); err != nil {
+		return nil, err
+	}
+
+	return &i, nil
+}
+
 func (s *boltStore) CreateIncident(incident *models.Incident) error {
 	tx, err := s.Begin(true)
 	if err != nil {
@@ -97,4 +117,47 @@ func (s *boltStore) DeleteIncident(id int) error {
 	return s.Update(func(tx *bolt.Tx) error {
 		return tx.Bucket(incidentBucket).Delete(itob(id))
 	})
+}
+
+func (s *boltStore) CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) error {
+	tx, err := s.Begin(true)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	bucket := tx.Bucket(incidentBucket)
+
+	bytes := bucket.Get(itob(incidentID))
+	if bytes == nil {
+		return errors.New("no incident found by that id")
+	}
+
+	var i models.Incident
+	if err := json.Unmarshal(bytes, &i); err != nil {
+		return err
+	}
+
+	seq, err := bucket.NextSequence()
+	if err != nil {
+		return err
+	}
+
+	update.ID = int(seq)
+	update.Time = time.Now()
+
+	i.Status = update.Status
+	i.Updates = append(i.Updates, update)
+	i.UpdatedAt = time.Now()
+
+	buf, err := json.Marshal(i)
+	if err != nil {
+		return err
+	}
+
+	if err := bucket.Put(itob(i.ID), buf); err != nil {
+		return err
+	}
+
+	return tx.Commit()
 }
