@@ -1,7 +1,13 @@
 # We should probably not include this
-dataPath: ./hello/
+dataPath: ./databasefiles/
+authToken: abc123def456
+website:
+  title: Rocket.Chat
+  headerBgColor: "#2e343e"
+  cacheBreaker: v1
+  daysToAggregate: 14
 services:
-  - name: service1
-    description: My awesome service
-  - name: service2
-    description: My second awesome service
+  - name: Marketplace
+    description: The Rocket.Chat Marketplace API server.
+  - name: Push Gateway
+    description: The Rocket.Chat Push Gateway server.
