@@ -100,7 +100,7 @@ func IncidentDelete(c *gin.Context) {
 	idParam := c.Param("id")
 
 	if idParam == "" {
-		internalErrorHandlerDetailed(c, errors.New("invalid incident id passed"))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid incident id passed"})
 		return
 	}
 
@@ -123,7 +123,7 @@ func IncidentUpdateCreate(c *gin.Context) {
 	idParam := c.Param("id")
 
 	if idParam == "" {
-		internalErrorHandlerDetailed(c, errors.New("invalid incident id passed"))
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid incident id passed"})
 		return
 	}
 
