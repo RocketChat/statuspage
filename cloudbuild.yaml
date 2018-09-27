@@ -1,0 +1,17 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/rocket-chat/statuscentral:$REVISION_ID', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/rocket-chat/statuscentral:$REVISION_ID']
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - '-n'
+    - 'production'
+    - 'set'
+    - 'image'
+    - 'deployment'
+    - 'statuscentral'
+    - 'statuscentral=gcr.io/rocket-chat/statuscentral:$REVISION_ID'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-east1-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=cloud-services'
