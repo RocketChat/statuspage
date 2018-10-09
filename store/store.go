@@ -19,4 +19,6 @@ type Store interface {
 	UpdateIncident(incident *models.Incident) error
 
 	DeleteIncident(id int) error
+
+	CheckDb() error
 }

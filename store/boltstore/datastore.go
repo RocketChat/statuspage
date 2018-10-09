@@ -52,6 +52,15 @@ func New() (store.Store, error) {
 	return &boltStore{db}, nil
 }
 
+func (s *boltStore) CheckDb() error {
+	tx, err := s.Begin(false)
+	if err != nil {
+		return err
+	}
+
+	return tx.Rollback()
+}
+
 //itob returns an 8-byte big endian representation of v.
 func itob(v int) []byte {
 	b := make([]byte, 8)

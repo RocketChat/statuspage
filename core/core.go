@@ -11,7 +11,6 @@ var _dataStore store.Store
 
 //TwistItUp takes everything and starts the core up
 func TwistItUp() error {
-	log.Println("Creating the bolt data store")
 	store, err := boltstore.New()
 	if err != nil {
 		log.Fatalln(err)
@@ -25,4 +24,9 @@ func TwistItUp() error {
 	}
 
 	return nil
+}
+
+//LivenessCheck checks the database to see if it responds to a ping
+func LivenessCheck() error {
+	return _dataStore.CheckDb()
 }
