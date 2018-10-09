@@ -1,27 +1,21 @@
 package router
 
 import (
-	"github.com/RocketChat/statuscentral/config"
 	v1c "github.com/RocketChat/statuscentral/controllers/v1"
 	"github.com/RocketChat/statuscentral/router/middleware"
 	"github.com/gin-gonic/gin"
 )
 
-//ShowConfig is just a temporary route
-func ShowConfig(c *gin.Context) {
-	c.JSON(200, config.Config)
-}
-
 //Start configures the routes and their handlers plus starts routing
 func Start() error {
+	runMetricsRouter()
+
 	router := gin.Default()
 
 	router.Static("/static", "./static")
 	router.LoadHTMLGlob("templates/*")
 
 	router.GET("/", v1c.IndexHandler)
-
-	router.GET("/config", ShowConfig)
 
 	v1 := router.Group("/api").Group("/v1")
 
@@ -46,4 +40,11 @@ func Start() error {
 	}
 
 	return router.Run(":5000")
+}
+
+func runMetricsRouter() {
+	healthMetricsRouter := gin.Default()
+	healthMetricsRouter.GET("/health", v1c.LivenessCheckHandler)
+
+	go healthMetricsRouter.Run(":8080")
 }
