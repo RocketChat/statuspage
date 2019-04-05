@@ -2,6 +2,7 @@ package boltstore
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/RocketChat/statuscentral/models"
@@ -63,6 +64,33 @@ func (s *boltStore) CreateService(service *models.Service) error {
 
 	seq, _ := bucket.NextSequence()
 	service.ID = int(seq)
+	service.UpdatedAt = time.Now()
+
+	buf, err := json.Marshal(service)
+	if err != nil {
+		return err
+	}
+
+	if err := bucket.Put(itob(service.ID), buf); err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
+
+func (s *boltStore) UpdateService(service *models.Service) error {
+	if service.ID <= 0 {
+		return errors.New("invalid service id")
+	}
+
+	tx, err := s.Begin(true)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	bucket := tx.Bucket(serviceBucket)
+
 	service.UpdatedAt = time.Now()
 
 	buf, err := json.Marshal(service)

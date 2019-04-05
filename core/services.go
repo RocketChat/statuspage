@@ -1,6 +1,9 @@
 package core
 
 import (
+	"errors"
+	"strings"
+
 	"github.com/RocketChat/statuscentral/config"
 	"github.com/RocketChat/statuscentral/models"
 )
@@ -59,4 +62,26 @@ func createServicesFromConfig() error {
 	}
 
 	return nil
+}
+
+func updateServiceToStatus(serviceName, status string) error {
+	service, err := GetServiceByName(serviceName)
+
+	if err != nil {
+		return err
+	}
+
+	if service == nil {
+		return errors.New("unknown service")
+	}
+
+	val, ok := models.ServiceStatuses[strings.ToLower(status)]
+
+	if !ok {
+		return errors.New("invalid service status")
+	}
+
+	service.Status = val
+
+	return _dataStore.UpdateService(service)
 }

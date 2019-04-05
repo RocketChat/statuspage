@@ -34,13 +34,13 @@ func IncidentGetOne(c *gin.Context) {
 	idParam := c.Param("id")
 
 	if idParam == "" {
-		internalErrorHandlerDetailed(c, errors.New("invalid incident id passed"))
+		badRequestHandlerDetailed(c, errors.New("invalid incident id passed"))
 		return
 	}
 
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		internalErrorHandlerDetailed(c, err)
+		badRequestHandlerDetailed(c, err)
 		return
 	}
 
@@ -67,7 +67,7 @@ func IncidentCreate(c *gin.Context) {
 	}
 
 	if incident.Title == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "title must be provided"})
+		badRequestHandlerDetailed(c, errors.New("title must be provided"))
 		return
 	}
 
@@ -100,13 +100,13 @@ func IncidentDelete(c *gin.Context) {
 	idParam := c.Param("id")
 
 	if idParam == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid incident id passed"})
+		badRequestHandlerDetailed(c, errors.New("invalid incident id passed"))
 		return
 	}
 
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		internalErrorHandlerDetailed(c, err)
+		badRequestHandlerDetailed(c, err)
 		return
 	}
 
@@ -118,18 +118,18 @@ func IncidentDelete(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-//IncidentUpdateCreate creates and update for an incident
+//IncidentUpdateCreate creates an update for an incident
 func IncidentUpdateCreate(c *gin.Context) {
 	idParam := c.Param("id")
 
 	if idParam == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid incident id passed"})
+		badRequestHandlerDetailed(c, errors.New("invalid incident id passed"))
 		return
 	}
 
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		internalErrorHandlerDetailed(c, err)
+		badRequestHandlerDetailed(c, err)
 		return
 	}
 
@@ -139,18 +139,18 @@ func IncidentUpdateCreate(c *gin.Context) {
 	}
 
 	if update.Message == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "message is missing"})
+		badRequestHandlerDetailed(c, errors.New("message is missing"))
 		return
 	}
 
 	if update.Status == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "status is missing"})
+		badRequestHandlerDetailed(c, errors.New("status is missing"))
 		return
 	}
 
 	status, ok := models.IncidentStatuses[strings.ToLower(update.Status)]
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid status value"})
+		badRequestHandlerDetailed(c, errors.New("invalid status value"))
 		return
 	}
 
@@ -167,5 +167,5 @@ func IncidentUpdateCreate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, incident)
+	c.JSON(http.StatusCreated, incident)
 }

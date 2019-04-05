@@ -10,6 +10,7 @@ type Incident struct {
 	Time      time.Time         `json:"time"`
 	Title     string            `json:"title"`
 	Status    string            `json:"status"`
+	Services  []Service         `json:"services,omitempty"`
 	Updates   []*IncidentUpdate `json:"updates"`
 	UpdatedAt time.Time         `json:"updatedAt"`
 }

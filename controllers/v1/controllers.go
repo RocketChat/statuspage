@@ -14,6 +14,12 @@ func internalErrorHandler(c *gin.Context, err error) {
 	c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error"})
 }
 
+func badRequestHandlerDetailed(c *gin.Context, err error) {
+	log.Println(err)
+
+	c.JSON(http.StatusBadRequest, gin.H{"error": "bad request", "details": err.Error()})
+}
+
 func internalErrorHandlerDetailed(c *gin.Context, err error) {
 	log.Println(err)
 

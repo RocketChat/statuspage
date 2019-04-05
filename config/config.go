@@ -6,6 +6,8 @@ import (
 	"log"
 	"strings"
 
+	"github.com/gin-gonic/gin"
+
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -14,7 +16,7 @@ var Config *config
 
 type config struct {
 	DataPath  string          `yaml:"dataPath" json:"dataPath"`
-	AuthToken string          `yaml:"authToken" json:"authToken"`
+	AuthToken string          `yaml:"authToken" json:"-"`
 	Website   websiteConfig   `yaml:"website" json:"website"`
 	Services  []serviceConfig `yaml:"services" json:"services"`
 }
@@ -56,6 +58,10 @@ func (c *config) VerifySettings() error {
 	}
 
 	return nil
+}
+
+func (c *config) HttpHandler(gc *gin.Context) {
+	gc.JSON(200, Config)
 }
 
 //Load tries to load the configuration file

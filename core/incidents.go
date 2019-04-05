@@ -33,6 +33,13 @@ func CreateIncident(incident *models.Incident) error {
 		incident.Updates = append(incident.Updates, &update)
 	}
 
+	for _, s := range incident.Services {
+		if err := updateServiceToStatus(s.Name, s.Status); err != nil {
+			return err
+		}
+	}
+
+	incident.Services = nil
 	return _dataStore.CreateIncident(incident)
 }
 
@@ -40,6 +47,13 @@ func CreateIncident(incident *models.Incident) error {
 func UpdateIncident(incident *models.Incident) error {
 	ensureIncidentDefaults(incident)
 
+	for _, s := range incident.Services {
+		if err := updateServiceToStatus(s.Name, s.Status); err != nil {
+			return err
+		}
+	}
+
+	incident.Services = nil
 	return _dataStore.UpdateIncident(incident)
 }
 

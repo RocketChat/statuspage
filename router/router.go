@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/RocketChat/statuscentral/config"
 	v1c "github.com/RocketChat/statuscentral/controllers/v1"
 	"github.com/RocketChat/statuscentral/router/middleware"
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,8 @@ func Start() error {
 
 	v1.Use(middleware.IsAuthorized)
 	{
+		v1.GET("/config", config.Config.HttpHandler)
+
 		v1.POST("/services", middleware.NotImplemented)
 		v1.GET("/services/:id", middleware.NotImplemented)
 		v1.PATCH("/services/:id", middleware.NotImplemented)

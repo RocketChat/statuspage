@@ -1,6 +1,7 @@
 package models
 
 import (
+	"strings"
 	"time"
 )
 
@@ -43,4 +44,14 @@ var ServiceStatusValues = map[string]int{
 	"Outage":                3,
 	"Scheduled Maintenance": 4,
 	"Unknown":               5,
+}
+
+//ServiceStatuses holds a map of the lower case service statuses
+var ServiceStatuses = map[string]string{
+	strings.ToLower(ServiceStatusOperational):          ServiceStatusOperational,
+	strings.ToLower(ServiceStatusDegraded):             ServiceStatusDegraded,
+	strings.ToLower(ServiceStatusPartialOutage):        ServiceStatusPartialOutage,
+	strings.ToLower(ServiceStatusOutage):               ServiceStatusOutage,
+	strings.ToLower(ServiceStatusScheduledMaintenance): ServiceStatusScheduledMaintenance,
+	strings.ToLower(ServiceStatusUnknown):              ServiceStatusUnknown,
 }
