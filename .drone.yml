@@ -1,6 +1,9 @@
 ---
 kind: pipeline
+type: kubernetes
 name: build
+metadata:
+  namespace: ci
 
 platform:
   os: linux
