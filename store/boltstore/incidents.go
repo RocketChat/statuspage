@@ -144,7 +144,10 @@ func (s *boltStore) CreateIncidentUpdate(incidentID int, update *models.Incident
 	}
 
 	update.ID = int(seq)
-	update.Time = time.Now()
+
+	if update.Time.IsZero() {
+		update.Time = time.Now()
+	}
 
 	i.Status = update.Status
 	i.Updates = append(i.Updates, update)
