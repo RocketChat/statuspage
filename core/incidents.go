@@ -22,10 +22,14 @@ func GetIncidentByID(id int) (*models.Incident, error) {
 //CreateIncident creates the incident in the storage layer
 func CreateIncident(incident *models.Incident) error {
 	ensureIncidentDefaults(incident)
+	
+	if incident.Time.IsZero() {
+		incident.Time = time.Now()	
+	}
 
 	if len(incident.Updates) == 0 {
 		update := models.IncidentUpdate{
-			Time:    time.Now(),
+			Time:    incident.Time,
 			Status:  incident.Status,
 			Message: "Initial status of " + incident.Status.String(),
 		}
