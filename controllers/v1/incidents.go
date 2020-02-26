@@ -58,7 +58,7 @@ func IncidentGetOne(c *gin.Context) {
 	c.JSON(http.StatusOK, incident)
 }
 
-//IncidentCreate creates the service, ensuring the database is correct
+//IncidentCreate creates the incident, ensuring the database is correct
 func IncidentCreate(c *gin.Context) {
 	var incident models.Incident
 
@@ -77,22 +77,6 @@ func IncidentCreate(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, &incident)
-}
-
-//IncidentUpdate updates the service, ensuring the database is correct
-func IncidentUpdate(c *gin.Context) {
-	var incident models.Incident
-
-	if err := c.BindJSON(&incident); err != nil {
-		return
-	}
-
-	if err := core.UpdateIncident(&incident); err != nil {
-		internalErrorHandlerDetailed(c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, &incident)
 }
 
 //IncidentDelete removes the service, ensuring the database is correct
@@ -148,7 +132,7 @@ func IncidentUpdateCreate(c *gin.Context) {
 		return
 	}
 
-	status, ok := models.IncidentStatuses[strings.ToLower(update.Status)]
+	status, ok := models.IncidentStatuses[strings.ToLower(update.Status.String())]
 	if !ok {
 		badRequestHandlerDetailed(c, errors.New("invalid status value"))
 		return

@@ -2,7 +2,6 @@ package core
 
 import (
 	"errors"
-	"strings"
 
 	"github.com/RocketChat/statuscentral/config"
 	"github.com/RocketChat/statuscentral/models"
@@ -28,7 +27,7 @@ func MostCriticalServiceStatus(services []*models.Service) int {
 	mostCritical := 0
 
 	for _, service := range services {
-		serviceStatus := models.ServiceStatusValues[service.Status]
+		serviceStatus := models.ServiceStatusValues[service.Status.String()]
 		if serviceStatus > mostCritical {
 			mostCritical = serviceStatus
 		}
@@ -64,7 +63,7 @@ func createServicesFromConfig() error {
 	return nil
 }
 
-func updateServiceToStatus(serviceName, status string) error {
+func updateServiceToStatus(serviceName string, status models.ServiceStatus) error {
 	service, err := GetServiceByName(serviceName)
 
 	if err != nil {
@@ -75,7 +74,7 @@ func updateServiceToStatus(serviceName, status string) error {
 		return errors.New("unknown service")
 	}
 
-	val, ok := models.ServiceStatuses[strings.ToLower(status)]
+	val, ok := models.ServiceStatuses[status.ToLower()]
 
 	if !ok {
 		return errors.New("invalid service status")

@@ -27,7 +27,7 @@ func CreateIncident(incident *models.Incident) error {
 		update := models.IncidentUpdate{
 			Time:    time.Now(),
 			Status:  incident.Status,
-			Message: "Initial status of " + incident.Status,
+			Message: "Initial status of " + incident.Status.String(),
 		}
 
 		incident.Updates = append(incident.Updates, &update)
@@ -39,22 +39,7 @@ func CreateIncident(incident *models.Incident) error {
 		}
 	}
 
-	incident.Services = nil
 	return _dataStore.CreateIncident(incident)
-}
-
-//UpdateIncident updates the incident in the storage layer
-func UpdateIncident(incident *models.Incident) error {
-	ensureIncidentDefaults(incident)
-
-	for _, s := range incident.Services {
-		if err := updateServiceToStatus(s.Name, s.Status); err != nil {
-			return err
-		}
-	}
-
-	incident.Services = nil
-	return _dataStore.UpdateIncident(incident)
 }
 
 //DeleteIncident removes the incident from the storage layer
@@ -76,14 +61,39 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) error {
 		return errors.New("status property is missing")
 	}
 
-	status, ok := models.IncidentStatuses[strings.ToLower(update.Status)]
+	status, ok := models.IncidentStatuses[strings.ToLower(update.Status.String())]
 	if !ok {
 		return errors.New("invalid status value")
 	}
 
 	update.Status = status
 
-	return _dataStore.CreateIncidentUpdate(incidentID, update)
+	if err := _dataStore.CreateIncidentUpdate(incidentID, update); err != nil {
+		return err
+	}
+
+	if status != models.IncidentStatusResolved {
+		for _, s := range update.Services {
+			if err := updateServiceToStatus(s.Name, s.Status); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}
+
+	incident, err := _dataStore.GetIncidentByID(incidentID)
+	if err != nil {
+		return err
+	}
+
+	for _, s := range incident.Services {
+		if err := updateServiceToStatus(s.Name, models.ServiceStatusOperational); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func ensureIncidentDefaults(incident *models.Incident) {
