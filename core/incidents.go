@@ -25,7 +25,7 @@ func CreateIncident(incident *models.Incident) error {
 
 	if len(incident.Updates) == 0 {
 		update := models.IncidentUpdate{
-			Time:    time.Now(),
+			Time:    incident.Time,
 			Status:  incident.Status,
 			Message: "Initial status of " + incident.Status.String(),
 		}
