@@ -9,15 +9,17 @@ platform:
   os: linux
   arch: amd64
 steps:
-- name: build_n_push
-  image: plugins/ecr
+- name: build_image_and_push
+  image: plugins/docker
   settings:
-    access_key:
-      from_secret: ecr_username
-    secret_key:
-      from_secret: ecr_password
-    repo: 652890069108.dkr.ecr.us-east-1.amazonaws.com/statuscentral
-    registry: 652890069108.dkr.ecr.us-east-1.amazonaws.com
+    username: drone-ci
+    password:
+      from_secret: REG_PASS
+    repo: registry.rocket.chat/statuscentral
+    registry: registry.rocket.chat
+    tags:
+      - ${DRONE_COMMIT_SHA:0:7}
+      - ${DRONE_COMMIT_BRANCH/\//-}
   when:
     event:
     - push
