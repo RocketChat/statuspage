@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/RocketChat/statuscentral/config"
@@ -26,7 +28,12 @@ func New() (store.Store, error) {
 		return nil, errors.New("configuration doesn't seem to exist")
 	}
 
-	db, err := bolt.Open(fmt.Sprintf("%s%s", config.Config.DataPath, "statuscentral.bbolt"), 0600, &bolt.Options{Timeout: 15 * time.Second})
+	ex, err := os.Executable()
+	if err != nil {
+		return nil, err
+	}
+
+	db, err := bolt.Open(fmt.Sprintf("%s%s%s", filepath.Dir(ex), config.Config.DataPath, "statuscentral.bbolt"), 0600, &bolt.Options{Timeout: 15 * time.Second})
 	if err != nil {
 		return nil, err
 	}

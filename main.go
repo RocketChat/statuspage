@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	configFile := flag.String("configFile", "config.yaml", "Config File full path. Defaults to current folder")
+	configFile := flag.String("configFile", "statuscentral.yaml", "Config File full path. Defaults to current folder")
 
 	flag.Parse()
 
@@ -21,5 +21,5 @@ func main() {
 		panic(err)
 	}
 
-	router.Start()
+	router.Start(config.Config.HTTP.Port)
 }
