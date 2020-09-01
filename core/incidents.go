@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -24,18 +25,38 @@ func CreateIncident(incident *models.Incident) error {
 	ensureIncidentDefaults(incident)
 
 	if len(incident.Updates) == 0 {
-		update := models.IncidentUpdate{
-			Time:    incident.Time,
-			Status:  incident.Status,
-			Message: "Initial status of " + incident.Status.String(),
-		}
+		if incident.Status != models.IncidentStatusScheduledMaintenance {
+			update := models.IncidentUpdate{
+				Time:    incident.Time,
+				Status:  incident.Status,
+				Message: "Initial status of " + incident.Status.String(),
+			}
 
-		incident.Updates = append(incident.Updates, &update)
+			incident.Updates = append(incident.Updates, &update)
+		} else {
+			update := models.IncidentUpdate{
+				Time:   incident.Time,
+				Status: incident.Status,
+				Message: fmt.Sprintf("Starts at %s with a scheduled end at %s",
+					time.Unix(incident.Maintenance.Start, 0).Format(time.RFC1123Z),
+					time.Unix(incident.Maintenance.End, 0).Format(time.RFC1123Z)),
+			}
+
+			incident.Updates = append(incident.Updates, &update)
+		}
 	}
 
-	for _, s := range incident.Services {
-		if err := updateServiceToStatus(s.Name, s.Status); err != nil {
-			return err
+	if incident.Status == models.IncidentStatusScheduledMaintenance {
+		for _, s := range incident.Services {
+			if err := updateServiceToStatus(s.Name, models.ServiceStatusScheduledMaintenance); err != nil {
+				return err
+			}
+		}
+	} else {
+		for _, s := range incident.Services {
+			if err := updateServiceToStatus(s.Name, s.Status); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -88,7 +109,7 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) error {
 	}
 
 	for _, s := range incident.Services {
-		if err := updateServiceToStatus(s.Name, models.ServiceStatusOperational); err != nil {
+		if err := updateServiceToStatus(s.Name, models.ServiceStatusNominal); err != nil {
 			return err
 		}
 	}

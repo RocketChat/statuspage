@@ -6,13 +6,20 @@ import (
 
 //Incident holds the information about the incident
 type Incident struct {
-	ID        int               `json:"id"`
-	Time      time.Time         `json:"time"`
-	Title     string            `json:"title"`
-	Status    IncidentStatus    `json:"status"`
-	Services  []ServiceUpdate   `json:"services,omitempty"`
-	Updates   []*IncidentUpdate `json:"updates"`
-	UpdatedAt time.Time         `json:"updatedAt"`
+	ID          int                 `json:"id"`
+	Time        time.Time           `json:"time"`
+	Title       string              `json:"title"`
+	Status      IncidentStatus      `json:"status"`
+	Services    []ServiceUpdate     `json:"services,omitempty"`
+	Updates     []*IncidentUpdate   `json:"updates"`
+	UpdatedAt   time.Time           `json:"updatedAt"`
+	Maintenance IncidentMaintenance `json:"maintenance"`
+}
+
+//IncidentMaintenance contains the data about a scheduled maintenance.
+type IncidentMaintenance struct {
+	Start int64 `json:"start"`
+	End   int64 `json:"end"`
 }
 
 //IncidentStatus represents the status of the incident
@@ -23,6 +30,8 @@ func (is IncidentStatus) String() string {
 }
 
 const (
+	//IncidentStatusScheduledMaintenance - Schedule maintenance Incident
+	IncidentStatusScheduledMaintenance IncidentStatus = "Scheduled Maintenance"
 	//IncidentStatusInvestigating - Investigating Incident
 	IncidentStatusInvestigating IncidentStatus = "Investigating"
 	//IncidentStatusIdentified - Identified cause of Incident
@@ -39,10 +48,11 @@ const (
 
 //IncidentStatuses holds all of the valid incident statuses
 var IncidentStatuses = map[string]IncidentStatus{
-	"investigating": IncidentStatusInvestigating,
-	"identified":    IncidentStatusIdentified,
-	"update":        IncidentStatusUpdate,
-	"monitoring":    IncidentStatusMonitoring,
-	"resolved":      IncidentStatusResolved,
-	"default":       IncidentDefaultStatus,
+	"scheduled maintenance": IncidentStatusScheduledMaintenance,
+	"investigating":         IncidentStatusInvestigating,
+	"identified":            IncidentStatusIdentified,
+	"update":                IncidentStatusUpdate,
+	"monitoring":            IncidentStatusMonitoring,
+	"resolved":              IncidentStatusResolved,
+	"default":               IncidentDefaultStatus,
 }
