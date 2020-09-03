@@ -18,8 +18,8 @@ type Incident struct {
 
 //IncidentMaintenance contains the data about a scheduled maintenance.
 type IncidentMaintenance struct {
-	Start int64 `json:"start"`
-	End   int64 `json:"end"`
+	Start time.Time `json:"start"`
+	End   time.Time `json:"end"`
 }
 
 //IncidentStatus represents the status of the incident

@@ -72,11 +72,11 @@ func IncidentCreate(c *gin.Context) {
 	}
 
 	if incident.Status == models.IncidentStatusScheduledMaintenance {
-		if incident.Maintenance.Start == 0 {
+		if incident.Maintenance.Start.IsZero() {
 			badRequestHandlerDetailed(c, errors.New("schedule maintenance incident must have a start date"))
 			return
 		}
-		if incident.Maintenance.End == 0 {
+		if incident.Maintenance.End.IsZero() {
 			badRequestHandlerDetailed(c, errors.New("schedule maintenance incident must have predicted end date"))
 			return
 		}

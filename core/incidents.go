@@ -38,8 +38,8 @@ func CreateIncident(incident *models.Incident) error {
 				Time:   incident.Time,
 				Status: incident.Status,
 				Message: fmt.Sprintf("Starts at %s with a scheduled end at %s",
-					time.Unix(incident.Maintenance.Start, 0).Format(time.RFC1123Z),
-					time.Unix(incident.Maintenance.End, 0).Format(time.RFC1123Z)),
+					incident.Maintenance.Start.Format(time.RFC1123Z),
+					incident.Maintenance.End.Format(time.RFC1123Z)),
 			}
 
 			incident.Updates = append(incident.Updates, &update)
