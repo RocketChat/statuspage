@@ -70,11 +70,11 @@
                                     <div class="line">
                                         {{ range $incident := $aggregatedIncident.Incidents }}
                                             <div class="content">
-                                            <h3>{{ $incident.Title }}</h3>
+                                                <h3>{{ $incident.Title }}</h3>
 
-                                            {{ range $update := $incident.Updates }}
-                                                <p><b>{{ $update.Time.Format "15:04"}} {{ $update.Status }}</b> - {{$update.Message}}</p>
-                                            {{ end }}
+                                                {{ range $update := $incident.Updates }}
+                                                    <p><b>{{ $update.Time.Format "15:04"}} {{ $update.Status }}</b> - {{$update.Message}}</p>
+                                                {{ end }}
                                             </div>
                                         {{ end }}
                                     </div>
