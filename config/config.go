@@ -19,6 +19,7 @@ type config struct {
 	AuthToken string          `yaml:"authToken" json:"-"`
 	Website   websiteConfig   `yaml:"website" json:"website"`
 	Services  []serviceConfig `yaml:"services" json:"services"`
+	Twitter   twitterConfig   `yaml:"twitter" json:"twitter"`
 }
 
 type websiteConfig struct {
@@ -31,6 +32,14 @@ type websiteConfig struct {
 type serviceConfig struct {
 	Name        string `yaml:"name" json:"name"`
 	Description string `yaml:"description" json:"description"`
+}
+
+type twitterConfig struct {
+	Enabled        bool   `yaml:"enabled" json:"enabled"`
+	ConsumerKey    string `yaml:"consumerKey" json:"consumerKey"`
+	ConsumerSecret string `yaml:"consumerSecret" json:"consumerSecret"`
+	AccessToken    string `yaml:"accessToken" json:"accessToken"`
+	AccessSecret   string `yaml:"accessSecret" json:"accessSecret"`
 }
 
 func (c *config) Load(filePath string) error {
