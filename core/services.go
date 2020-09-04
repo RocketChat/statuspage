@@ -50,7 +50,7 @@ func createServicesFromConfig() error {
 		toCreate := &models.Service{
 			Name:        s.Name,
 			Description: s.Description,
-			Status:      models.ServiceStatusOperational,
+			Status:      models.ServiceStatusNominal,
 			Enabled:     true,
 			Tags:        make([]string, 0),
 		}

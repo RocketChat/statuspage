@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -23,19 +24,43 @@ func GetIncidentByID(id int) (*models.Incident, error) {
 func CreateIncident(incident *models.Incident) error {
 	ensureIncidentDefaults(incident)
 
-	if len(incident.Updates) == 0 {
-		update := models.IncidentUpdate{
-			Time:    incident.Time,
-			Status:  incident.Status,
-			Message: "Initial status of " + incident.Status.String(),
-		}
-
-		incident.Updates = append(incident.Updates, &update)
+	if incident.Status == models.IncidentStatusScheduledMaintenance {
+		incident.IsMaintenance = true
 	}
 
-	for _, s := range incident.Services {
-		if err := updateServiceToStatus(s.Name, s.Status); err != nil {
-			return err
+	if len(incident.Updates) == 0 {
+		if incident.IsMaintenance {
+			update := models.IncidentUpdate{
+				Time:   incident.Time,
+				Status: incident.Status,
+				Message: fmt.Sprintf("Starts at %s with a scheduled end at %s",
+					incident.Maintenance.Start.Format(time.RFC1123Z),
+					incident.Maintenance.End.Format(time.RFC1123Z)),
+			}
+
+			incident.Updates = append(incident.Updates, &update)
+		} else {
+			update := models.IncidentUpdate{
+				Time:    incident.Time,
+				Status:  incident.Status,
+				Message: "Initial status of " + incident.Status.String(),
+			}
+
+			incident.Updates = append(incident.Updates, &update)
+		}
+	}
+
+	if incident.IsMaintenance {
+		for _, s := range incident.Services {
+			if err := updateServiceToStatus(s.Name, models.ServiceStatusScheduledMaintenance); err != nil {
+				return err
+			}
+		}
+	} else {
+		for _, s := range incident.Services {
+			if err := updateServiceToStatus(s.Name, s.Status); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -88,7 +113,7 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) error {
 	}
 
 	for _, s := range incident.Services {
-		if err := updateServiceToStatus(s.Name, models.ServiceStatusOperational); err != nil {
+		if err := updateServiceToStatus(s.Name, models.ServiceStatusNominal); err != nil {
 			return err
 		}
 	}
