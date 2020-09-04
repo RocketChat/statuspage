@@ -24,16 +24,12 @@ func GetIncidentByID(id int) (*models.Incident, error) {
 func CreateIncident(incident *models.Incident) error {
 	ensureIncidentDefaults(incident)
 
-	if len(incident.Updates) == 0 {
-		if incident.Status != models.IncidentStatusScheduledMaintenance {
-			update := models.IncidentUpdate{
-				Time:    incident.Time,
-				Status:  incident.Status,
-				Message: "Initial status of " + incident.Status.String(),
-			}
+	if incident.Status == models.IncidentStatusScheduledMaintenance {
+		incident.IsMaintenance = true
+	}
 
-			incident.Updates = append(incident.Updates, &update)
-		} else {
+	if len(incident.Updates) == 0 {
+		if incident.IsMaintenance {
 			update := models.IncidentUpdate{
 				Time:   incident.Time,
 				Status: incident.Status,
@@ -43,10 +39,18 @@ func CreateIncident(incident *models.Incident) error {
 			}
 
 			incident.Updates = append(incident.Updates, &update)
+		} else {
+			update := models.IncidentUpdate{
+				Time:    incident.Time,
+				Status:  incident.Status,
+				Message: "Initial status of " + incident.Status.String(),
+			}
+
+			incident.Updates = append(incident.Updates, &update)
 		}
 	}
 
-	if incident.Status == models.IncidentStatusScheduledMaintenance {
+	if incident.IsMaintenance {
 		for _, s := range incident.Services {
 			if err := updateServiceToStatus(s.Name, models.ServiceStatusScheduledMaintenance); err != nil {
 				return err
