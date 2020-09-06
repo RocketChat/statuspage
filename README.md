@@ -5,7 +5,7 @@
 First step is to create an incident and describe which services were affected and what those services status is.
 
 ### Service Statuses
-* Operational
+* Nominal
 * Degraded
 * Partial-outage
 * Outage
