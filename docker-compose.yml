@@ -3,18 +3,17 @@ version: "3"
 services:
   statuscentral:
     container_name: statuscentral
-    image: statuscentral:latest
+    image: statuscentral:edge
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - PORT=5000
-      - CONF_FILE=statuscentral.conf.yaml
-      - DB_DIR=data/db
+      args:
+        - PORT=5050
+        - CONF_FILE=statuscentral.compose.yml
     restart: unless-stopped
     volumes:
-      - statuscentral_vol:/usr/local/statuscentral/data/db
+      - statuscentral_vol:/usr/local/statuscentral
     ports:
-      - 5000:5000
+      - 5050:5050
 volumes:
   statuscentral_vol:

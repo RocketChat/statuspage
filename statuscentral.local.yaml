@@ -1,5 +1,5 @@
 # We should probably not include this
-dataPath: /data/db/
+dataPath: ./db/
 authToken: abc123def456
 website:
   title: Rocket.Chat
