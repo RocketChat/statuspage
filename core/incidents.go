@@ -38,18 +38,8 @@ func SendMaintenanceTwitter(incident *models.Incident) (int64, error) {
 	}
 
 	b := &bytes.Buffer{}
-	data := struct {
-		Title            string
-		Services         []models.ServiceUpdate
-		MaintenanceStart string
-		MaintenanceEnd   string
-	}{
-		incident.Title,
-		incident.Services,
-		incident.Maintenance.Start.Format("Monday, 02 January 2006 at 15:04:05 UTC"),
-		incident.Maintenance.End.Format("Monday, 02 January 2006 at 15:04:05 UTC"),
-	}
-	if err := tmpl.ExecuteTemplate(b, tmpl.Name(), data); err != nil {
+	err = tmpl.ExecuteTemplate(b, tmpl.Name(), incident)
+	if err != nil {
 		return 0, err
 	}
 
