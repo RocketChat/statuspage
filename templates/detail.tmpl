@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Status &bullet; {{ .owner }}</title>
-    <link rel="icon" type="image/png" href="static/img/favicon.png">
+    <link rel="icon" type="image/png" href="/static/img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="static/css/app.css?v={{ .cacheBreaker }}" />
-    <link rel="stylesheet" href="static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/app.css?v={{ .cacheBreaker }}" />
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
 
     <style>
         .header {
@@ -16,11 +16,17 @@
     </style>
 </head>
 <body>
+    {{ $success := "fa-check-circle success" }}
+    {{ $info := "fa-info-circle info" }}
+    {{ $warning := "fa-exclamation-circle warning" }}
+    {{ $critical := "fa-times-circle critical" }}
+    {{ $unknown := "fa-question-circle info" }}
+
     <div class="header"></div>
     <div class="page">
         <div class="spacer">
             <div class="flex row">
-                <img class="logo" src="{{ .logo }}" />
+                <a href="/"><img class="logo" src="/{{ .logo }}" /></a>
             </div>
 
             <div class="info-header">
@@ -54,35 +60,27 @@
             <div class="main flex row wrap">
                 <div class="incidents">
                     <div class="line">
-                        <h2>Incidents</h2>
+                        <h2>Incident #{{ .incident.ID}}</h2>
+
+                        <span>Status: {{ .incident.Status}}</span>
                     </div>
 
-                    {{ range $index, $aggregatedIncident := .incidents }}
-                        {{ $length := len $aggregatedIncident.Incidents }}
-                        {{ if eq $length 0 }}
-                            <div class="line empty">
-                                {{ $aggregatedIncident.Time.Format "Jan 02" }}
+                    <div class="line">
+                        <div class="flex row">
+                            <span class="date">{{ .incident.Time.Format "Jan 02 2006" }}</span>
+                            <div class="content stretch">
+                                <h3>Title: {{ .incident.Title }}</h3>
                             </div>
-                        {{ else }}
-                            <div class="line">
-                                <div class="flex row">
-                                    <span class="date">{{ $aggregatedIncident.Time.Format "Jan 02" }}</span>
-                                    <div class="line">
-                                        {{ range $incident := $aggregatedIncident.Incidents }}
-                                            <div class="content">
-                                                <h3><a href="/incidents/{{ $incident.ID }}">{{ $incident.Title }}</a></h3>
-
-                                                {{ range $update := $incident.Updates }}
-                                                    <p><b>{{ $update.Time.Format "15:04"}} {{ $update.Status }}</b> - {{$update.Message}}</p>
-                                                {{ end }}
-                                            </div>
-                                        {{ end }}
-                                    </div>
-                                </div>
+                        </div>
+                        {{ range $update := .incident.Updates }}
+                        <div class="flex row wrap">
+                            <span class="date">{{ $update.Time.Format "15:04"}}</span>
+                            <div class="content stretch">
+                                <div><b>{{ $update.Status }}</b> - {{$update.Message}}</div>
                             </div>
+                        </div>
                         {{ end }}
-                    {{ end }}
-
+                    </div>
                 </div>
 
                 <div class="services">
