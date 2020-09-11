@@ -6,15 +6,17 @@ import (
 
 //Incident holds the information about the incident
 type Incident struct {
-	ID            int                 `json:"id"`
-	Time          time.Time           `json:"time"`
-	Title         string              `json:"title"`
-	Status        IncidentStatus      `json:"status"`
-	Services      []ServiceUpdate     `json:"services,omitempty"`
-	Updates       []*IncidentUpdate   `json:"updates"`
-	UpdatedAt     time.Time           `json:"updatedAt"`
-	Maintenance   IncidentMaintenance `json:"maintenance"`
-	IsMaintenance bool                `json:"isMaintenance"`
+	ID              int                 `json:"id"`
+	Time            time.Time           `json:"time"`
+	Title           string              `json:"title"`
+	Status          IncidentStatus      `json:"status"`
+	Services        []ServiceUpdate     `json:"services,omitempty"`
+	Updates         []*IncidentUpdate   `json:"updates"`
+	UpdatedAt       time.Time           `json:"updatedAt"`
+	Maintenance     IncidentMaintenance `json:"maintenance"`
+	IsMaintenance   bool                `json:"isMaintenance"`
+	OriginalTweetID int64               `json:"originalTweetId"`
+	LatestTweetID   int64               `json:"latestTweetId"`
 }
 
 //IncidentMaintenance contains the data about a scheduled maintenance.

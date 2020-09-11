@@ -14,7 +14,7 @@ func Start() error {
 	router := gin.Default()
 
 	router.Static("/static", "./static")
-	router.LoadHTMLGlob("templates/*")
+	router.LoadHTMLGlob("templates/index.tmpl")
 
 	router.GET("/", v1c.IndexHandler)
 

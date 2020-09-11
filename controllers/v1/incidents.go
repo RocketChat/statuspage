@@ -82,12 +82,13 @@ func IncidentCreate(c *gin.Context) {
 		}
 	}
 
-	if err := core.CreateIncident(&incident); err != nil {
+	inc, err := core.CreateIncident(&incident)
+	if err != nil {
 		internalErrorHandlerDetailed(c, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, &incident)
+	c.JSON(http.StatusCreated, &inc)
 }
 
 //IncidentDelete removes the service, ensuring the database is correct
@@ -151,12 +152,7 @@ func IncidentUpdateCreate(c *gin.Context) {
 
 	update.Status = status
 
-	if err := core.CreateIncidentUpdate(id, &update); err != nil {
-		internalErrorHandlerDetailed(c, err)
-		return
-	}
-
-	incident, err := core.GetIncidentByID(id)
+	incident, err := core.CreateIncidentUpdate(id, &update)
 	if err != nil {
 		internalErrorHandlerDetailed(c, err)
 		return

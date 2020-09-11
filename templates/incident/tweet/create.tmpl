@@ -1,0 +1,7 @@
+We detected an incident affecting our services:
+
+{{ .Status }} - {{ .Title }}
+Affected Services: {{ range .Services }}
+- {{ .Name }} {{ end }}
+
+Visit https://status.rocket.chat for more details.
