@@ -38,8 +38,7 @@ func SendMaintenanceTwitter(incident *models.Incident) (int64, error) {
 	}
 
 	b := &bytes.Buffer{}
-	err = tmpl.ExecuteTemplate(b, tmpl.Name(), incident)
-	if err != nil {
+	if err = tmpl.ExecuteTemplate(b, tmpl.Name(), incident); err != nil {
 		return 0, err
 	}
 
