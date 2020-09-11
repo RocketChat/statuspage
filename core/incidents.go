@@ -49,8 +49,7 @@ func SendMaintenanceTwitter(incident *models.Incident) (int64, error) {
 		incident.Maintenance.Start.Format("Monday, 02 January 2006 at 15:04:05 UTC"),
 		incident.Maintenance.End.Format("Monday, 02 January 2006 at 15:04:05 UTC"),
 	}
-	err = tmpl.ExecuteTemplate(b, tmpl.Name(), data)
-	if err != nil {
+	if err := tmpl.ExecuteTemplate(b, tmpl.Name(), data); err != nil {
 		return 0, err
 	}
 
@@ -76,8 +75,7 @@ func SendIncidentTwitter(incident *models.Incident) (int64, error) {
 	}
 
 	b := &bytes.Buffer{}
-	err = tmpl.ExecuteTemplate(b, tmpl.Name(), incident)
-	if err != nil {
+	if err := tmpl.ExecuteTemplate(b, tmpl.Name(), incident); err != nil {
 		return 0, err
 	}
 
@@ -103,8 +101,7 @@ func SendIncidentUpdateTwitter(incident *models.Incident, update *models.Inciden
 	}
 
 	b := &bytes.Buffer{}
-	err = tmpl.ExecuteTemplate(b, tmpl.Name(), update)
-	if err != nil {
+	if err := tmpl.ExecuteTemplate(b, tmpl.Name(), update); err != nil {
 		return 0, err
 	}
 
