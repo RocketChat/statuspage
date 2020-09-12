@@ -2,7 +2,7 @@ git_commit = `git rev-parse HEAD | cut -c -7 || echo ${DRONE_COMMIT_SHA}`
 git_tag = `git describe --tags \`git rev-list --tags --max-count=1)\``
 
 binary_name=statuscentral
-config_file=statuscentral.local.yaml
+config_file=statuscentral.yaml
 
 # Build the statuscentral binary.
 build: clean

@@ -9,10 +9,11 @@ services:
       dockerfile: Dockerfile
       args:
         - PORT=5050
-        - CONF_FILE=statuscentral.compose.yml
+    command: -configFile=/usr/local/statuscentral/statuscentral.compose.yaml
     restart: unless-stopped
     volumes:
-      - statuscentral_vol:/usr/local/statuscentral
+      - statuscentral_vol:/usr/local/statuscentral/db
+      - ${PWD}/statuscentral.compose.yml:/usr/local/statuscentral/statuscentral.compose.yaml
     ports:
       - 5050:5050
 volumes:
