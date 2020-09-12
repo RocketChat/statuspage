@@ -1,0 +1,7 @@
+Incident Update:
+
+{{ .Status }} - {{ .Message }}
+Affected Services: {{ range .Services }}
+- {{ .Name }} {{ end }}
+
+Visit https://status.rocket.chat for more details.

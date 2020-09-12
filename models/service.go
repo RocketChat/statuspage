@@ -31,8 +31,8 @@ func (ss ServiceStatus) ToLower() string {
 }
 
 const (
-	//ServiceStatusOperational - Everything is good
-	ServiceStatusOperational ServiceStatus = "Operational"
+	//ServiceStatusNominal - Everything is good
+	ServiceStatusNominal ServiceStatus = "Nominal"
 	//ServiceStatusDegraded - Degraded Performance
 	ServiceStatusDegraded ServiceStatus = "Degraded"
 	//ServiceStatusPartialOutage - Partial Outage
@@ -47,7 +47,7 @@ const (
 
 //ServiceStatusValues holds the names to numbers for values of the status
 var ServiceStatusValues = map[string]int{
-	"Operational":           0,
+	"Nominal":               0,
 	"Degraded":              1,
 	"Partial-outage":        2,
 	"Outage":                3,
@@ -57,7 +57,7 @@ var ServiceStatusValues = map[string]int{
 
 //ServiceStatuses holds a map of the lower case service statuses
 var ServiceStatuses = map[string]ServiceStatus{
-	ServiceStatusOperational.ToLower():          ServiceStatusOperational,
+	ServiceStatusNominal.ToLower():              ServiceStatusNominal,
 	ServiceStatusDegraded.ToLower():             ServiceStatusDegraded,
 	ServiceStatusPartialOutage.ToLower():        ServiceStatusPartialOutage,
 	ServiceStatusOutage.ToLower():               ServiceStatusOutage,

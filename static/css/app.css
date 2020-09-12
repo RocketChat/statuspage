@@ -212,6 +212,9 @@ h1 {
 
 .incidents > .line .content {
     flex: 1;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 10px;
+    margin-bottom: 20px;
 }
 
 .incidents > .line .content h3 {

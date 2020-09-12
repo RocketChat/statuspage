@@ -71,12 +71,24 @@ func IncidentCreate(c *gin.Context) {
 		return
 	}
 
-	if err := core.CreateIncident(&incident); err != nil {
+	if incident.Status == models.IncidentStatusScheduledMaintenance {
+		if incident.Maintenance.Start.IsZero() {
+			badRequestHandlerDetailed(c, errors.New("schedule maintenance incident must have a start date"))
+			return
+		}
+		if incident.Maintenance.End.IsZero() {
+			badRequestHandlerDetailed(c, errors.New("schedule maintenance incident must have predicted end date"))
+			return
+		}
+	}
+
+	inc, err := core.CreateIncident(&incident)
+	if err != nil {
 		internalErrorHandlerDetailed(c, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, &incident)
+	c.JSON(http.StatusCreated, &inc)
 }
 
 //IncidentDelete removes the service, ensuring the database is correct
@@ -140,12 +152,7 @@ func IncidentUpdateCreate(c *gin.Context) {
 
 	update.Status = status
 
-	if err := core.CreateIncidentUpdate(id, &update); err != nil {
-		internalErrorHandlerDetailed(c, err)
-		return
-	}
-
-	incident, err := core.GetIncidentByID(id)
+	incident, err := core.CreateIncidentUpdate(id, &update)
 	if err != nil {
 		internalErrorHandlerDetailed(c, err)
 		return
