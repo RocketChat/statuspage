@@ -4,6 +4,8 @@ go 1.14
 
 require (
 	github.com/boltdb/bolt v1.3.1 // indirect
+	github.com/dghubble/go-twitter v0.0.0-20200725221434-4bc8ad7ad1b4
+	github.com/dghubble/oauth1 v0.6.0
 	github.com/etcd-io/bbolt v1.3.0
 	github.com/gin-gonic/gin v1.6.3
 	github.com/google/gofuzz v1.2.0 // indirect
