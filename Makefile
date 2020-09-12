@@ -16,7 +16,7 @@ clean:
 
 # Build the statuscentral docker image.
 docker:
-	docker build -t fleetcommand:$(git_commit) .
+	docker build -t statuscentral:$(git_commit) .
 
 # Build and execute the statuscentral binary.
 run: build
