@@ -1,5 +1,5 @@
 # We should probably not include this
-dataPath: ./databasefiles/
+dataPath: ./db/
 authToken: abc123def456
 website:
   title: Rocket.Chat
@@ -11,6 +11,8 @@ services:
     description: The Rocket.Chat Marketplace API server.
   - name: Push Gateway
     description: The Rocket.Chat Push Gateway server.
+http:
+  port: 5050
 twitter:
   enabled: true
   consumerKey: ui4IfSC8T3Up7yHgb5DJhpLk6
