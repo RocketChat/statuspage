@@ -14,6 +14,6 @@ services:
 http:
   port: 5050
 twitter:
-  enabled: true
+  enabled: false
   consumerKey: ui4IfSC8T3Up7yHgb5DJhpLk6
   consumerSecret: T3QcZLaQGYTAXrbW5HdOLi9TAuY9RNtJrMqU0jzLS9mfhhlDu7

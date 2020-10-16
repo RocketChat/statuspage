@@ -89,6 +89,10 @@ a {
     flex-wrap: wrap;
 }
 
+.stretch {
+    width: 100%;
+}
+
 .row {
     flex-direction: row;
 }

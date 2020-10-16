@@ -16,9 +16,12 @@ func Start(port int) error {
 	router := gin.Default()
 
 	router.Static("/static", "./static")
-	router.LoadHTMLGlob("templates/index.tmpl")
+	router.LoadHTMLGlob("templates/*.tmpl")
 
 	router.GET("/", v1c.IndexHandler)
+
+	router.GET("/incidents/:id", v1c.IncidentDetailHandler)
+	router.GET("/i/:id", v1c.IncidentShortRedirectHandler)
 
 	v1 := router.Group("/api").Group("/v1")
 
