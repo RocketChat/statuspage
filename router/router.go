@@ -1,6 +1,8 @@
 package router
 
 import (
+	"fmt"
+
 	"github.com/RocketChat/statuscentral/config"
 	v1c "github.com/RocketChat/statuscentral/controllers/v1"
 	"github.com/RocketChat/statuscentral/router/middleware"
@@ -8,7 +10,7 @@ import (
 )
 
 //Start configures the routes and their handlers plus starts routing
-func Start() error {
+func Start(port int) error {
 	runMetricsRouter()
 
 	router := gin.Default()
@@ -45,7 +47,7 @@ func Start() error {
 		v1.DELETE("/incidents/:id/updates/:updateId", middleware.NotImplemented)
 	}
 
-	return router.Run(":5000")
+	return router.Run(fmt.Sprintf(":%d", port))
 }
 
 func runMetricsRouter() {

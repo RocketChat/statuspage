@@ -15,11 +15,16 @@ import (
 var Config *config
 
 type config struct {
+	HTTP      httpConfig      `yaml:"http" json:"http"`
 	DataPath  string          `yaml:"dataPath" json:"dataPath"`
 	AuthToken string          `yaml:"authToken" json:"-"`
 	Website   websiteConfig   `yaml:"website" json:"website"`
 	Services  []serviceConfig `yaml:"services" json:"services"`
 	Twitter   twitterConfig   `yaml:"twitter" json:"twitter"`
+}
+
+type httpConfig struct {
+	Port int `yaml:"port" json:"port"`
 }
 
 type websiteConfig struct {

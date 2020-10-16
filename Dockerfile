@@ -1,28 +1,27 @@
-FROM golang:1.12.8 as backend
+FROM golang:1.14-alpine AS build
 
-RUN go get -u github.com/golang/dep/cmd/dep
-
+RUN apk add --no-cache ca-certificates git
 WORKDIR /go/src/github.com/RocketChat/statuscentral
-
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a
 
-RUN dep ensure && \
-    GOOS=linux && \
-    go build
+FROM scratch as runtime
 
-FROM alpine:latest
+ARG GIN_MODE=release
+ARG PORT=5000
+ENV GIN_MODE=${GIN_MODE}
+ENV PORT=${PORT}
 
-WORKDIR /root/
+WORKDIR /usr/local/statuscentral
 
-RUN apk --no-cache add ca-certificates libc6-compat && \ 
-    mkdir app
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /go/src/github.com/RocketChat/statuscentral/statuscentral .
+COPY --from=build /go/src/github.com/RocketChat/statuscentral/templates templates
+COPY --from=build /go/src/github.com/RocketChat/statuscentral/static static
 
-ENV GIN_MODE=release
+EXPOSE ${PORT}
 
-COPY --from=backend /go/src/github.com/RocketChat/statuscentral/statuscentral .
-COPY --from=backend /go/src/github.com/RocketChat/statuscentral/templates templates
-COPY --from=backend /go/src/github.com/RocketChat/statuscentral/static static
-
-EXPOSE 5000
-
-CMD ["/root/statuscentral"]
+ENTRYPOINT ["./statuscentral"]
