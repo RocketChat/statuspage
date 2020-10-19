@@ -190,7 +190,7 @@ func (s *boltStore) GetIncidentUpdateByID(incidentId int, updateId int) (*models
 }
 
 func (s *boltStore) DeleteIncidentUpdateByID(incidentId int, updateId int) error {
-	tx, err := s.Begin(false)
+	tx, err := s.Begin(true)
 	if err != nil {
 		return err
 	}
