@@ -160,3 +160,74 @@ func IncidentUpdateCreate(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, incident)
 }
+
+//IncidentUpdateGetOne gets an update for an incident
+func IncidentUpdateGetOne(c *gin.Context) {
+	idParam := c.Param("id")
+	updateIdParam := c.Param("updateId")
+
+	if idParam == "" {
+		badRequestHandlerDetailed(c, errors.New("invalid incident id passed"))
+		return
+	}
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		badRequestHandlerDetailed(c, err)
+		return
+	}
+
+	if updateIdParam == "" {
+		badRequestHandlerDetailed(c, errors.New("invalid update id passed"))
+		return
+	}
+
+	updateID, err := strconv.Atoi(updateIdParam)
+	if err != nil {
+		badRequestHandlerDetailed(c, err)
+		return
+	}
+
+	update, err := core.GetIncidentUpdate(id, updateID)
+	if err != nil {
+		internalErrorHandlerDetailed(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, update)
+}
+
+//IncidentUpdateDelete deletes an update for an incident
+func IncidentUpdateDelete(c *gin.Context) {
+	idParam := c.Param("id")
+	updateIdParam := c.Param("updateId")
+
+	if idParam == "" {
+		badRequestHandlerDetailed(c, errors.New("invalid incident id passed"))
+		return
+	}
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		badRequestHandlerDetailed(c, err)
+		return
+	}
+
+	if updateIdParam == "" {
+		badRequestHandlerDetailed(c, errors.New("invalid update id passed"))
+		return
+	}
+
+	updateId, err := strconv.Atoi(updateIdParam)
+	if err != nil {
+		badRequestHandlerDetailed(c, err)
+		return
+	}
+
+	if err := core.DeleteIncidentUpdate(id, updateId); err != nil {
+		internalErrorHandlerDetailed(c, err)
+		return
+	}
+
+	c.Status(http.StatusOK)
+}

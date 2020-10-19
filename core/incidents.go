@@ -240,6 +240,42 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*model
 	return incident, nil
 }
 
+//GetIncidentUpdate gets an update for an incident
+func GetIncidentUpdate(incidentID int, updateID int) (*models.IncidentUpdate, error) {
+	if incidentID <= 0 {
+		return nil, errors.New("invalid incident id")
+	}
+
+	update, err := _dataStore.GetIncidentUpdateByID(incidentID, updateID)
+	if err != nil {
+		return nil, errors.New("unable to get incident update")
+	}
+
+	return update, nil
+}
+
+//DeleteIncidentUpdate deletes an update for an incident
+func DeleteIncidentUpdate(incidentID int, updateID int) error {
+	if incidentID <= 0 {
+		return errors.New("invalid incident id")
+	}
+
+	update, err := _dataStore.GetIncidentUpdateByID(incidentID, updateID)
+	if err != nil {
+		return errors.New("unable to get incident update")
+	}
+
+	if update == nil {
+		return nil
+	}
+
+	if err := _dataStore.DeleteIncidentUpdateByID(incidentID, updateID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func ensureIncidentDefaults(incident *models.Incident) {
 	if incident.Updates == nil {
 		incident.Updates = make([]*models.IncidentUpdate, 0)
