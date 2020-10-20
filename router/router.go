@@ -43,8 +43,8 @@ func Start(port int) error {
 		v1.DELETE("/incidents/:id", v1c.IncidentDelete)
 
 		v1.POST("/incidents/:id/updates", v1c.IncidentUpdateCreate)
-		v1.GET("/incidents/:id/updates/:updateId", middleware.NotImplemented)
-		v1.DELETE("/incidents/:id/updates/:updateId", middleware.NotImplemented)
+		v1.GET("/incidents/:id/updates/:updateId", v1c.IncidentUpdateGetOne)
+		v1.DELETE("/incidents/:id/updates/:updateId", v1c.IncidentUpdateDelete)
 	}
 
 	return router.Run(fmt.Sprintf(":%d", port))
