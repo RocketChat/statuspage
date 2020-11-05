@@ -1,3 +1,5 @@
 statuscentral
 statuscentral.yaml
 db/
+vendor/
+databasefiles/
