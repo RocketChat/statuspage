@@ -90,7 +90,10 @@ func SendIncidentUpdateTwitter(incident *models.Incident, update *models.Inciden
 	}
 
 	b := &bytes.Buffer{}
-	if err := tmpl.ExecuteTemplate(b, tmpl.Name(), update); err != nil {
+	if err := tmpl.ExecuteTemplate(b, tmpl.Name(), map[string]interface{}{
+		"update":   update,
+		"incident": incident,
+	}); err != nil {
 		return 0, err
 	}
 

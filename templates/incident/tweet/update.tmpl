@@ -1,7 +1,7 @@
 Incident Update:
 
-{{ .Status }} - {{ .Message }}
-Affected Services: {{ range .Services }}
-- {{ .Name }} {{ end }}
+{{ .update.Status }} - {{ .update.Message }}
+Affected Services: {{ range .update.Services }}
+- {{ .update.Name }} {{ end }}
 
-Visit https://status.rocket.chat/i/{{ .ID }} for more details.
+Visit https://status.rocket.chat/i/{{ .incident.ID }} for more details.
