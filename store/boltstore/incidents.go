@@ -35,7 +35,6 @@ func (s *boltStore) GetIncidents(latest bool) ([]*models.Incident, error) {
 			continue
 		}
 
-		incidents = append(incidents, &i)
 	}
 
 	return incidents, nil
