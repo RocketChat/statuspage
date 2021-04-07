@@ -15,8 +15,8 @@ steps:
     username: drone-ci
     password:
       from_secret: REG_PASS
-    repo: registry.rocket.chat/statuscentral
-    registry: registry.rocket.chat
+    repo: registry.cloud.rocket.chat/statuscentral
+    registry: registry.cloud.rocket.chat
     tags:
       - ${DRONE_COMMIT_SHA:0:7}
       - ${DRONE_COMMIT_BRANCH/\//-}
