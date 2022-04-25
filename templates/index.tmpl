@@ -101,6 +101,7 @@
                             <div class="line">
                                 <p>
                                     {{ $service.Name }} - {{ $service.Status }}
+                                  
                                     <span class="
                                         fa indicator
                                         {{ if eq $service.Status "Nominal" }}
@@ -118,6 +119,40 @@
                                         {{ end }}
                                     "></span>
                                 </p>
+                                <span style=margin-bottom: 10px;></span>
+                                {{ range $region := $service.Regions }}
+                                        <div style="
+                                            float: left;
+                                            /* margin: 5px; */
+                                        ">
+                                        <p style="
+                                            float: left;
+                                            margin-right: 5px;
+                                        ">
+                                        {{ $region.Name }}
+                                        </p>
+                                        <p style ="
+                                            float: left;
+                                        ">
+                                        <span class="
+                                            fa indicator
+                                            {{ if eq $region.Status "Nominal" }}
+                                                {{ $success }}
+                                            {{ else if eq $region.Status "Degraded" }}
+                                                {{ $info }}
+                                            {{ else if eq $region.Status "Partial-outage" }}
+                                                {{ $warning }}
+                                            {{ else if eq $region.Status "Outage" }}
+                                                {{ $critical }}
+                                            {{ else if eq $region.Status "Scheduled Maintenance" }}
+                                                {{ $info }}
+                                            {{ else if eq $region.Status "Unknown" }}
+                                                {{ $unknown }}
+                                            {{ end }} 
+                                        "></span>
+                                        </p>
+                                        </div>
+                                {{ end }}
                             </div>
                         {{ end }}
                     </div>
