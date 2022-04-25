@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//ServicesGet gets all of the services
+// ServicesGet gets all of the services
 func ServicesGet(c *gin.Context) {
 	services, err := core.GetServices()
 	if err != nil {

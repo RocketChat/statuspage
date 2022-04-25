@@ -14,12 +14,12 @@ import (
 	"github.com/dghubble/oauth1"
 )
 
-//GetIncidents retrieves the incidents from the storage layer
+// GetIncidents retrieves the incidents from the storage layer
 func GetIncidents(latest bool) ([]*models.Incident, error) {
 	return _dataStore.GetIncidents(latest)
 }
 
-//GetIncidentByID retrieves the incident by id, both incident and error will be nil if none found
+// GetIncidentByID retrieves the incident by id, both incident and error will be nil if none found
 func GetIncidentByID(id int) (*models.Incident, error) {
 	return _dataStore.GetIncidentByID(id)
 }
@@ -110,7 +110,7 @@ func SendIncidentUpdateTwitter(incident *models.Incident, update *models.Inciden
 	return tweet.ID, nil
 }
 
-//CreateIncident creates the incident in the storage layer
+// CreateIncident creates the incident in the storage layer
 func CreateIncident(incident *models.Incident) (*models.Incident, error) {
 	ensureIncidentDefaults(incident)
 
@@ -146,9 +146,21 @@ func CreateIncident(incident *models.Incident) (*models.Incident, error) {
 				return nil, err
 			}
 		}
+
+		for _, r := range incident.Regions {
+			if err := updateRegionToStatus(r.Name, models.ServiceStatusScheduledMaintenance); err != nil {
+				return nil, err
+			}
+		}
 	} else {
 		for _, s := range incident.Services {
 			if err := updateServiceToStatus(s.Name, s.Status); err != nil {
+				return nil, err
+			}
+		}
+
+		for _, r := range incident.Regions {
+			if err := updateRegionToStatus(r.Name, r.Status); err != nil {
 				return nil, err
 			}
 		}
@@ -181,12 +193,12 @@ func CreateIncident(incident *models.Incident) (*models.Incident, error) {
 	return incident, nil
 }
 
-//DeleteIncident removes the incident from the storage layer
+// DeleteIncident removes the incident from the storage layer
 func DeleteIncident(id int) error {
 	return _dataStore.DeleteIncident(id)
 }
 
-//CreateIncidentUpdate creates an update for an incident
+// CreateIncidentUpdate creates an update for an incident
 func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*models.Incident, error) {
 	if incidentID <= 0 {
 		return nil, errors.New("invalid incident id")
@@ -222,9 +234,21 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*model
 				return nil, err
 			}
 		}
+
+		for _, r := range update.Regions {
+			if err := updateRegionToStatus(r.Name, r.Status); err != nil {
+				return nil, err
+			}
+		}
 	} else {
 		for _, s := range incident.Services {
 			if err := updateServiceToStatus(s.Name, models.ServiceStatusNominal); err != nil {
+				return nil, err
+			}
+		}
+
+		for _, r := range incident.Regions {
+			if err := updateRegionToStatus(r.Name, models.ServiceStatusNominal); err != nil {
 				return nil, err
 			}
 		}
@@ -243,7 +267,7 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*model
 	return incident, nil
 }
 
-//GetIncidentUpdate gets an update for an incident
+// GetIncidentUpdate gets an update for an incident
 func GetIncidentUpdate(incidentID int, updateID int) (*models.IncidentUpdate, error) {
 	if incidentID <= 0 {
 		return nil, errors.New("invalid incident id")
@@ -257,7 +281,7 @@ func GetIncidentUpdate(incidentID int, updateID int) (*models.IncidentUpdate, er
 	return update, nil
 }
 
-//DeleteIncidentUpdate deletes an update for an incident
+// DeleteIncidentUpdate deletes an update for an incident
 func DeleteIncidentUpdate(incidentID int, updateID int) error {
 	if incidentID <= 0 {
 		return errors.New("invalid incident id")
@@ -297,7 +321,7 @@ func ensureIncidentDefaults(incident *models.Incident) {
 	}
 }
 
-//AggregateIncidents aggregates the incidents
+// AggregateIncidents aggregates the incidents
 func AggregateIncidents(incidents []*models.Incident) models.AggregatedIncidents {
 	aggregatedIncidents := models.AggregatedIncidents{}
 

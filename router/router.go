@@ -29,7 +29,7 @@ func Start(port int) error {
 	v1.GET("/incidents", v1c.IncidentsGetAll)
 	v1.GET("/incidents/:id/updates", middleware.NotImplemented)
 
-	v1.Use(middleware.IsAuthorized)
+	//v1.Use(middleware.IsAuthorized)
 	{
 		v1.GET("/config", config.Config.HttpHandler)
 
@@ -37,6 +37,11 @@ func Start(port int) error {
 		v1.GET("/services/:id", middleware.NotImplemented)
 		v1.PATCH("/services/:id", middleware.NotImplemented)
 		v1.DELETE("/services/:id", middleware.NotImplemented)
+
+		v1.POST("/regions", v1c.RegionCreate)
+		v1.GET("/regions/:id", middleware.NotImplemented)
+		v1.PATCH("/regions/:id", middleware.NotImplemented)
+		v1.DELETE("/regions/:id", v1c.RegionDelete)
 
 		v1.POST("/incidents", v1c.IncidentCreate)
 		v1.GET("/incidents/:id", v1c.IncidentGetOne)

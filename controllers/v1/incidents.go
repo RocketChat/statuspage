@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//IncidentsGetAll gets all of the incidents, latest depends on the "?all=true" query
+// IncidentsGetAll gets all of the incidents, latest depends on the "?all=true" query
 func IncidentsGetAll(c *gin.Context) {
 	allParam := c.Query("all")
 
@@ -29,7 +29,7 @@ func IncidentsGetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, incidents)
 }
 
-//IncidentGetOne gets one incident by the provided id
+// IncidentGetOne gets one incident by the provided id
 func IncidentGetOne(c *gin.Context) {
 	idParam := c.Param("id")
 
@@ -58,7 +58,15 @@ func IncidentGetOne(c *gin.Context) {
 	c.JSON(http.StatusOK, incident)
 }
 
-//IncidentCreate creates the incident, ensuring the database is correct
+// IncidentCreate creates the incident, ensuring the database is correct
+// @Summary Creates a new incident
+// @ID incident-create
+// @Tags incident
+// @Accept json
+// @Param region body models.Incident true "Incident object"
+// @Produce json
+// @Success 200 {object} models.Incident
+// @Router /v1/incidents [post]
 func IncidentCreate(c *gin.Context) {
 	var incident models.Incident
 
@@ -91,7 +99,7 @@ func IncidentCreate(c *gin.Context) {
 	c.JSON(http.StatusCreated, &inc)
 }
 
-//IncidentDelete removes the service, ensuring the database is correct
+// IncidentDelete removes the service, ensuring the database is correct
 func IncidentDelete(c *gin.Context) {
 	idParam := c.Param("id")
 
@@ -114,7 +122,16 @@ func IncidentDelete(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-//IncidentUpdateCreate creates an update for an incident
+// IncidentUpdateCreate creates an update for an incident
+// @Summary Creates a new incident update
+// @ID incident-create-update
+// @Tags incident
+// @Accept json
+// @Param region body models.IncidentUpdate true "Incident update object"
+// @Param id path integer true "Incident id"
+// @Produce json
+// @Success 200 {object} models.IncidentUpdate
+// @Router /v1/incidents/{id}/updates [post]
 func IncidentUpdateCreate(c *gin.Context) {
 	idParam := c.Param("id")
 
@@ -161,7 +178,7 @@ func IncidentUpdateCreate(c *gin.Context) {
 	c.JSON(http.StatusCreated, incident)
 }
 
-//IncidentUpdateGetOne gets an update for an incident
+// IncidentUpdateGetOne gets an update for an incident
 func IncidentUpdateGetOne(c *gin.Context) {
 	idParam := c.Param("id")
 	updateIdParam := c.Param("updateId")
@@ -197,7 +214,7 @@ func IncidentUpdateGetOne(c *gin.Context) {
 	c.JSON(http.StatusOK, update)
 }
 
-//IncidentUpdateDelete deletes an update for an incident
+// IncidentUpdateDelete deletes an update for an incident
 func IncidentUpdateDelete(c *gin.Context) {
 	idParam := c.Param("id")
 	updateIdParam := c.Param("updateId")
