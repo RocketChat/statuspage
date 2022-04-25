@@ -11,6 +11,7 @@ type Incident struct {
 	Title           string              `json:"title"`
 	Status          IncidentStatus      `json:"status"`
 	Services        []ServiceUpdate     `json:"services,omitempty"`
+	Regions         []RegionUpdate      `json:"regions,omitempty"`
 	Updates         []*IncidentUpdate   `json:"updates"`
 	UpdatedAt       time.Time           `json:"updatedAt"`
 	Maintenance     IncidentMaintenance `json:"maintenance"`

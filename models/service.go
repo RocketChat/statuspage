@@ -7,42 +7,43 @@ import (
 
 //Service holds information about the service
 type Service struct {
-	ID          int           `json:"id"`
-	Name        string        `json:"name"`
-	Status      ServiceStatus `json:"status"`
-	Description string        `json:"description"`
-	Group       string        `json:"group"`
-	Link        string        `json:"link"`
-	Tags        []string      `json:"tags"`
-	Enabled     bool          `json:"enabled"`
-	UpdatedAt   time.Time     `json:"updatedAt"`
+	ID          int                    `json:"id"`
+	Name        string                 `json:"name"`
+	Status      ServiceAndRegionStatus `json:"status"`
+	Description string                 `json:"description"`
+	Group       string                 `json:"group"`
+	Link        string                 `json:"link"`
+	Tags        []string               `json:"tags"`
+	Enabled     bool                   `json:"enabled"`
+	UpdatedAt   time.Time              `json:"updatedAt"`
+	Regions     []Region               `json:"regions"` // Not stored like this on DB, filled on-read when needed
 }
 
-//ServiceStatus represents the status of a service
-type ServiceStatus string
+//ServiceAndRegionStatus represents the status of a service
+type ServiceAndRegionStatus string
 
-func (ss ServiceStatus) String() string {
+func (ss ServiceAndRegionStatus) String() string {
 	return string(ss)
 }
 
 //ToLower converts the status to lowercase string
-func (ss ServiceStatus) ToLower() string {
+func (ss ServiceAndRegionStatus) ToLower() string {
 	return strings.ToLower(ss.String())
 }
 
 const (
 	//ServiceStatusNominal - Everything is good
-	ServiceStatusNominal ServiceStatus = "Nominal"
+	ServiceStatusNominal ServiceAndRegionStatus = "Nominal"
 	//ServiceStatusDegraded - Degraded Performance
-	ServiceStatusDegraded ServiceStatus = "Degraded"
+	ServiceStatusDegraded ServiceAndRegionStatus = "Degraded"
 	//ServiceStatusPartialOutage - Partial Outage
-	ServiceStatusPartialOutage ServiceStatus = "Partial-outage"
+	ServiceStatusPartialOutage ServiceAndRegionStatus = "Partial-outage"
 	//ServiceStatusOutage - Outage
-	ServiceStatusOutage ServiceStatus = "Outage"
+	ServiceStatusOutage ServiceAndRegionStatus = "Outage"
 	//ServiceStatusScheduledMaintenance - Scheduled Maintenance
-	ServiceStatusScheduledMaintenance ServiceStatus = "Scheduled Maintenance"
+	ServiceStatusScheduledMaintenance ServiceAndRegionStatus = "Scheduled Maintenance"
 	//ServiceStatusUnknown - Unknown - used when the services were loaded from config
-	ServiceStatusUnknown ServiceStatus = "Unknown"
+	ServiceStatusUnknown ServiceAndRegionStatus = "Unknown"
 )
 
 //ServiceStatusValues holds the names to numbers for values of the status
@@ -56,7 +57,7 @@ var ServiceStatusValues = map[string]int{
 }
 
 //ServiceStatuses holds a map of the lower case service statuses
-var ServiceStatuses = map[string]ServiceStatus{
+var ServiceStatuses = map[string]ServiceAndRegionStatus{
 	ServiceStatusNominal.ToLower():              ServiceStatusNominal,
 	ServiceStatusDegraded.ToLower():             ServiceStatusDegraded,
 	ServiceStatusPartialOutage.ToLower():        ServiceStatusPartialOutage,
