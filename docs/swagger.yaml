@@ -1,0 +1,202 @@
+basePath: /api
+definitions:
+  models.Incident:
+    properties:
+      id:
+        type: integer
+      isMaintenance:
+        type: boolean
+      latestTweetId:
+        type: integer
+      maintenance:
+        $ref: '#/definitions/models.IncidentMaintenance'
+      originalTweetId:
+        type: integer
+      regions:
+        items:
+          $ref: '#/definitions/models.RegionUpdate'
+        type: array
+      services:
+        items:
+          $ref: '#/definitions/models.ServiceUpdate'
+        type: array
+      status:
+        type: string
+      time:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      updates:
+        items:
+          $ref: '#/definitions/models.IncidentUpdate'
+        type: array
+    type: object
+  models.IncidentMaintenance:
+    properties:
+      end:
+        type: string
+      start:
+        type: string
+    type: object
+  models.IncidentUpdate:
+    properties:
+      id:
+        type: integer
+      message:
+        type: string
+      regions:
+        items:
+          $ref: '#/definitions/models.RegionUpdate'
+        type: array
+      services:
+        items:
+          $ref: '#/definitions/models.ServiceUpdate'
+        type: array
+      status:
+        type: string
+      time:
+        type: string
+    type: object
+  models.Region:
+    properties:
+      description:
+        type: string
+      enabled:
+        type: boolean
+      id:
+        type: integer
+      name:
+        type: string
+      regionCode:
+        type: string
+      serviceID:
+        type: integer
+      serviceName:
+        type: string
+      status:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+    type: object
+  models.RegionUpdate:
+    properties:
+      name:
+        type: string
+      regionCode:
+        type: string
+      status:
+        type: string
+    type: object
+  models.ServiceUpdate:
+    properties:
+      name:
+        type: string
+      status:
+        type: string
+    type: object
+host: status.rocket.chat
+info:
+  contact:
+    name: Cloud Team
+    url: https://open.rocket.chat/group/cloud
+  description: Operational status for Rocket Chat SaaS & Cloud
+  title: Status Central
+  version: "0.1"
+paths:
+  /v1/incidents:
+    post:
+      consumes:
+      - application/json
+      operationId: incident-create
+      parameters:
+      - description: Incident object
+        in: body
+        name: region
+        required: true
+        schema:
+          $ref: '#/definitions/models.Incident'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Incident'
+      summary: Creates a new incident
+      tags:
+      - incident
+  /v1/incidents/{id}/updates:
+    post:
+      consumes:
+      - application/json
+      operationId: incident-create-update
+      parameters:
+      - description: Incident update object
+        in: body
+        name: region
+        required: true
+        schema:
+          $ref: '#/definitions/models.IncidentUpdate'
+      - description: Incident id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.IncidentUpdate'
+      summary: Creates a new incident update
+      tags:
+      - incident
+  /v1/regions:
+    post:
+      consumes:
+      - application/json
+      operationId: region-create
+      parameters:
+      - description: Region object
+        in: body
+        name: region
+        required: true
+        schema:
+          $ref: '#/definitions/models.Region'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Region'
+      summary: Creates a new region
+      tags:
+      - region
+  /v1/regions/{id}:
+    delete:
+      consumes:
+      - application/json
+      operationId: region-delete
+      parameters:
+      - description: Region id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+      summary: Deletes a given region
+      tags:
+      - region
+swagger: "2.0"
