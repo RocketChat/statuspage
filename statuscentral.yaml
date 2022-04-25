@@ -11,5 +11,10 @@ services:
     description: The Rocket.Chat Marketplace API server.
   - name: Push Gateway
     description: The Rocket.Chat Push Gateway server.
+regions:
+  - name: EU
+    description: EU region of the marketplace service
+    regionCode: 123
+    serviceName: Push Gateway
 http:
   port: 5050
