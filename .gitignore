@@ -3,3 +3,4 @@ statuscentral.yaml
 db/
 vendor/
 databasefiles/
+.idea/
