@@ -266,6 +266,27 @@ h1 {
 .services .group > .line {
     border-bottom: 1px solid #e5e5e5;
     padding: 15px;
+    height: 35px;
+}
+
+.services .group .line > .regions {
+    height: 12px;
+    margin-top: 5px;
+}
+
+.services .group .line .regions .region {
+    float: left;
+    margin-right: 10px;
+    font-size: 12px;
+}
+
+.services .group .line .regions .region .name {
+    float: left;
+    margin-right: 5px;
+}
+
+.services .group .line .regions .region .status {
+    float: left;
 }
 
 .services .group > .line:last-child {
