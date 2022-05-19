@@ -10,6 +10,30 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ServicesCreate creates a service
+// @Summary Creates a service
+// @ID services-create
+// @Tags services
+// @Accept json
+// @Param service body models.Service true "Service object"
+// @Produce json
+// @Success 200 {object} models.Service
+// @Router /v1/services [post]
+func ServiceCreate(c *gin.Context) {
+	var service models.Service
+
+	if err := c.BindJSON(&service); err != nil {
+		return
+	}
+
+	if err := core.CreateService(&service); err != nil {
+		internalErrorHandler(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, service)
+}
+
 // ServicesGet gets all of the services
 // @Summary Gets list of services
 // @ID services-getall

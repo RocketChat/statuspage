@@ -196,6 +196,36 @@ func IncidentUpdateCreate(c *gin.Context) {
 	c.JSON(http.StatusCreated, incident)
 }
 
+// IncidentUpdatesGetAll gets updates for an incident
+// @Summary Gets incident updates
+// @ID incident-update-getall
+// @Tags incident-update
+// @Produce json
+// @Success 200 {object} []models.IncidentUpdate
+// @Router /v1/incidents/{id}/updates [get]
+func IncidentUpdatesGetAll(c *gin.Context) {
+	idParam := c.Param("id")
+
+	if idParam == "" {
+		badRequestHandlerDetailed(c, errors.New("invalid incident id passed"))
+		return
+	}
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		badRequestHandlerDetailed(c, err)
+		return
+	}
+
+	updates, err := core.GetIncidentUpdates(id)
+	if err != nil {
+		internalErrorHandlerDetailed(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, updates)
+}
+
 // IncidentUpdateGetOne gets an update for an incident
 // @Summary Gets one incident update
 // @ID incident-update-getone

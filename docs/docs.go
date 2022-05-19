@@ -123,6 +123,27 @@ var doc = `{
             }
         },
         "/v1/incidents/{id}/updates": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "incident-update"
+                ],
+                "summary": "Gets incident updates",
+                "operationId": "incident-update-getall",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.IncidentUpdate"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -282,6 +303,38 @@ var doc = `{
                             "items": {
                                 "$ref": "#/definitions/models.Service"
                             }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Creates a service",
+                "operationId": "services-create",
+                "parameters": [
+                    {
+                        "description": "Service object",
+                        "name": "service",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Service"
                         }
                     }
                 }

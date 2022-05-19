@@ -31,6 +31,7 @@ type Store interface {
 	// Incident Updates
 	CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) error
 	GetIncidentUpdateByID(incidentID int, updateID int) (*models.IncidentUpdate, error)
+	GetIncidentUpdatesByIncidentID(incidentId int) ([]*models.IncidentUpdate, error)
 	DeleteIncidentUpdateByID(incidentID int, updateID int) error
 
 	CheckDb() error

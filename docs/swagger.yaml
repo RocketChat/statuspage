@@ -201,6 +201,20 @@ paths:
       tags:
       - incident
   /v1/incidents/{id}/updates:
+    get:
+      operationId: incident-update-getall
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.IncidentUpdate'
+            type: array
+      summary: Gets incident updates
+      tags:
+      - incident-update
     post:
       consumes:
       - application/json
@@ -306,6 +320,27 @@ paths:
               $ref: '#/definitions/models.Service'
             type: array
       summary: Gets list of services
+      tags:
+      - services
+    post:
+      consumes:
+      - application/json
+      operationId: services-create
+      parameters:
+      - description: Service object
+        in: body
+        name: service
+        required: true
+        schema:
+          $ref: '#/definitions/models.Service'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Service'
+      summary: Creates a service
       tags:
       - services
   /v1/services/{id}:

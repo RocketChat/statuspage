@@ -188,6 +188,26 @@ func (s *boltStore) GetIncidentUpdateByID(incidentId int, updateId int) (*models
 	return nil, nil
 }
 
+func (s *boltStore) GetIncidentUpdatesByIncidentID(incidentId int) ([]*models.IncidentUpdate, error) {
+	tx, err := s.Begin(false)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	bytes := tx.Bucket(incidentBucket).Get(itob(incidentId))
+	if bytes == nil {
+		return nil, nil
+	}
+
+	var incident models.Incident
+	if err := json.Unmarshal(bytes, &incident); err != nil {
+		return nil, err
+	}
+
+	return incident.Updates, nil
+}
+
 func (s *boltStore) DeleteIncidentUpdateByID(incidentId int, updateId int) error {
 	tx, err := s.Begin(true)
 	if err != nil {
