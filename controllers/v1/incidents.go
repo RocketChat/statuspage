@@ -12,6 +12,12 @@ import (
 )
 
 // IncidentsGetAll gets all of the incidents, latest depends on the "?all=true" query
+// @Summary Gets list of incidents
+// @ID incidents-getall
+// @Tags incident
+// @Produce json
+// @Success 200 {object} []models.Incident
+// @Router /v1/incidents [get]
 func IncidentsGetAll(c *gin.Context) {
 	allParam := c.Query("all")
 
@@ -30,6 +36,12 @@ func IncidentsGetAll(c *gin.Context) {
 }
 
 // IncidentGetOne gets one incident by the provided id
+// @Summary Gets one incident
+// @ID incidents-getOne
+// @Tags incident
+// @Produce json
+// @Success 200 {object} models.Incident
+// @Router /v1/incidents/{id} [get]
 func IncidentGetOne(c *gin.Context) {
 	idParam := c.Param("id")
 
@@ -100,6 +112,12 @@ func IncidentCreate(c *gin.Context) {
 }
 
 // IncidentDelete removes the service, ensuring the database is correct
+// @Summary Deletes an incidents
+// @ID incidents-delete
+// @Tags incident
+// @Produce json
+// @Success 200 {object} []models.Incident
+// @Router /v1/incidents/{id} [delete]
 func IncidentDelete(c *gin.Context) {
 	idParam := c.Param("id")
 
@@ -178,7 +196,43 @@ func IncidentUpdateCreate(c *gin.Context) {
 	c.JSON(http.StatusCreated, incident)
 }
 
+// IncidentUpdatesGetAll gets updates for an incident
+// @Summary Gets incident updates
+// @ID incident-update-getall
+// @Tags incident-update
+// @Produce json
+// @Success 200 {object} []models.IncidentUpdate
+// @Router /v1/incidents/{id}/updates [get]
+func IncidentUpdatesGetAll(c *gin.Context) {
+	idParam := c.Param("id")
+
+	if idParam == "" {
+		badRequestHandlerDetailed(c, errors.New("invalid incident id passed"))
+		return
+	}
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		badRequestHandlerDetailed(c, err)
+		return
+	}
+
+	updates, err := core.GetIncidentUpdates(id)
+	if err != nil {
+		internalErrorHandlerDetailed(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, updates)
+}
+
 // IncidentUpdateGetOne gets an update for an incident
+// @Summary Gets one incident update
+// @ID incident-update-getone
+// @Tags incident-update
+// @Produce json
+// @Success 200 {object} models.IncidentUpdate
+// @Router /v1/incidents/{id}/updates/{updateId} [get]
 func IncidentUpdateGetOne(c *gin.Context) {
 	idParam := c.Param("id")
 	updateIdParam := c.Param("updateId")
@@ -215,6 +269,12 @@ func IncidentUpdateGetOne(c *gin.Context) {
 }
 
 // IncidentUpdateDelete deletes an update for an incident
+// @Summary Deletes one incident update
+// @ID incident-update-delete
+// @Tags incident-update
+// @Produce json
+// @Success 200 {object} models.IncidentUpdate
+// @Router /v1/incidents/{id}/updates/{updateId} [delete]
 func IncidentUpdateDelete(c *gin.Context) {
 	idParam := c.Param("id")
 	updateIdParam := c.Param("updateId")

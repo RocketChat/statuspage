@@ -30,6 +30,30 @@ func (s *boltStore) GetServices() ([]*models.Service, error) {
 	return services, nil
 }
 
+func (s *boltStore) GetServicesEnabled() ([]*models.Service, error) {
+	tx, err := s.Begin(false)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	cursor := tx.Bucket(serviceBucket).Cursor()
+
+	services := make([]*models.Service, 0)
+	for k, data := cursor.First(); k != nil; k, data = cursor.Next() {
+		var i models.Service
+		if err := json.Unmarshal(data, &i); err != nil {
+			return nil, err
+		}
+
+		if i.Enabled {
+			services = append(services, &i)
+		}
+	}
+
+	return services, nil
+}
+
 func (s *boltStore) GetServiceByName(name string) (*models.Service, error) {
 	tx, err := s.Begin(false)
 	if err != nil {
@@ -51,6 +75,26 @@ func (s *boltStore) GetServiceByName(name string) (*models.Service, error) {
 	}
 
 	return nil, nil
+}
+
+func (s *boltStore) GetServiceByID(id int) (*models.Service, error) {
+	tx, err := s.Begin(false)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	bytes := tx.Bucket(serviceBucket).Get(itob(id))
+	if bytes == nil {
+		return nil, nil
+	}
+
+	var service models.Service
+	if err := json.Unmarshal(bytes, &service); err != nil {
+		return nil, err
+	}
+
+	return &service, nil
 }
 
 func (s *boltStore) CreateService(service *models.Service) error {

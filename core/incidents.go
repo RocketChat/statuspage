@@ -267,6 +267,20 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*model
 	return incident, nil
 }
 
+// GetIncidentUpdates gets updates for an incident
+func GetIncidentUpdates(incidentID int) ([]*models.IncidentUpdate, error) {
+	if incidentID <= 0 {
+		return nil, errors.New("invalid incident id")
+	}
+
+	updates, err := _dataStore.GetIncidentUpdatesByIncidentID(incidentID)
+	if err != nil {
+		return nil, errors.New("unable to get incident update")
+	}
+
+	return updates, nil
+}
+
 // GetIncidentUpdate gets an update for an incident
 func GetIncidentUpdate(incidentID int, updateID int) (*models.IncidentUpdate, error) {
 	if incidentID <= 0 {

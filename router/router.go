@@ -25,17 +25,17 @@ func Start(port int) error {
 
 	v1 := router.Group("/api").Group("/v1")
 
-	v1.GET("/services", v1c.ServicesGet)
+	v1.GET("/services", v1c.ServicesGetAll)
 	v1.GET("/incidents", v1c.IncidentsGetAll)
-	v1.GET("/incidents/:id/updates", middleware.NotImplemented)
+	v1.GET("/incidents/:id/updates", v1c.IncidentUpdatesGetAll)
 
 	v1.Use(middleware.IsAuthorized)
 	{
 		v1.GET("/config", config.Config.HttpHandler)
 
-		v1.POST("/services", middleware.NotImplemented)
-		v1.GET("/services/:id", middleware.NotImplemented)
-		v1.PATCH("/services/:id", middleware.NotImplemented)
+		v1.POST("/services", v1c.ServiceCreate)
+		v1.GET("/services/:id", v1c.ServicesGetOne)
+		v1.POST("/services/:id", v1c.ServiceUpdate)
 		v1.DELETE("/services/:id", middleware.NotImplemented)
 
 		v1.POST("/regions", v1c.RegionCreate)
