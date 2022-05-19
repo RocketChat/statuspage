@@ -98,26 +98,56 @@
                         {{ $unknown := "fa-question-circle info" }}
 
                         {{ range $service := .services }}
-                            <div class="line">
+                            <div class="line" style="height:35px">
                                 <p>
                                     {{ $service.Name }} - {{ $service.Status }}
-                                    <span class="
-                                        fa indicator
-                                        {{ if eq $service.Status "Nominal" }}
-                                            {{ $success }}
-                                        {{ else if eq $service.Status "Degraded" }}
-                                            {{ $info }}
-                                        {{ else if eq $service.Status "Partial-outage" }}
-                                            {{ $warning }}
-                                        {{ else if eq $service.Status "Outage" }}
-                                            {{ $critical }}
-                                        {{ else if eq $service.Status "Scheduled Maintenance" }}
-                                            {{ $info }}
-                                        {{ else if eq $service.Status "Unknown" }}
-                                            {{ $unknown }}
-                                        {{ end }}
-                                    "></span>
+
+                                    {{ if not $service.Regions }}
+                                        <span class="
+                                            fa indicator
+                                            {{ if eq $service.Status "Nominal" }}
+                                                {{ $success }}
+                                            {{ else if eq $service.Status "Degraded" }}
+                                                {{ $info }}
+                                            {{ else if eq $service.Status "Partial-outage" }}
+                                                {{ $warning }}
+                                            {{ else if eq $service.Status "Outage" }}
+                                                {{ $critical }}
+                                            {{ else if eq $service.Status "Scheduled Maintenance" }}
+                                                {{ $info }}
+                                            {{ else if eq $service.Status "Unknown" }}
+                                                {{ $unknown }}
+                                            {{ end }}
+                                        "></span>
+                                    {{ end }}
                                 </p>
+                                <div class="regions">
+                                    {{ range $region := $service.Regions }}
+                                            <div class="region">
+                                            <p class="name">
+                                            {{ $region.Name }}
+                                            </p>
+                                            <p class="status">
+                                            <span class="
+                                                fa indicator
+                                                {{ if eq $region.Status "Nominal" }}
+                                                    {{ $success }}
+                                                {{ else if eq $region.Status "Degraded" }}
+                                                    {{ $info }}
+                                                {{ else if eq $region.Status "Partial-outage" }}
+                                                    {{ $warning }}
+                                                {{ else if eq $region.Status "Outage" }}
+                                                    {{ $critical }}
+                                                {{ else if eq $region.Status "Scheduled Maintenance" }}
+                                                    {{ $info }}
+                                                {{ else if eq $region.Status "Unknown" }}
+                                                    {{ $unknown }}
+                                                {{ end }} 
+                                            "></span>
+                                            </p>
+                                            </div>
+                                    {{ end }}
+                                </div>
                             </div>
                         {{ end }}
                     </div>

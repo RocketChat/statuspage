@@ -26,7 +26,7 @@ func internalErrorHandlerDetailed(c *gin.Context, err error) {
 	c.JSON(http.StatusInternalServerError, gin.H{"error": "internal error", "details": err.Error()})
 }
 
-//LivenessCheckHandler checks to see whether the database responds to a ping
+// LivenessCheckHandler checks to see whether the database responds to a ping
 func LivenessCheckHandler(c *gin.Context) {
 	if err := core.LivenessCheck(); err != nil {
 		internalErrorHandler(c, err)

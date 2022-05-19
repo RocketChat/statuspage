@@ -20,6 +20,7 @@ type config struct {
 	AuthToken string          `yaml:"authToken" json:"-"`
 	Website   websiteConfig   `yaml:"website" json:"website"`
 	Services  []serviceConfig `yaml:"services" json:"services"`
+	Regions   []regionConfig  `yaml:"regions" json:"regions"`
 	Twitter   twitterConfig   `yaml:"twitter" json:"twitter"`
 }
 
@@ -37,6 +38,13 @@ type websiteConfig struct {
 type serviceConfig struct {
 	Name        string `yaml:"name" json:"name"`
 	Description string `yaml:"description" json:"description"`
+}
+
+type regionConfig struct {
+	Name        string `yaml:"name" json:"name"`
+	Description string `yaml:"description" json:"description"`
+	RegionCode  string `yaml:"regionCode" json:"regionCode"`
+	ServiceName string `yaml:"serviceName" json:"serviceName"`
 }
 
 type twitterConfig struct {

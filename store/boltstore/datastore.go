@@ -18,6 +18,7 @@ type boltStore struct {
 var (
 	incidentBucket = []byte("incidents")
 	serviceBucket  = []byte("services")
+	regionBucket   = []byte("regions")
 )
 
 //New creates a new bolt store
@@ -42,6 +43,10 @@ func New() (store.Store, error) {
 	}
 
 	if _, err := tx.CreateBucketIfNotExists(serviceBucket); err != nil {
+		return nil, err
+	}
+
+	if _, err := tx.CreateBucketIfNotExists(regionBucket); err != nil {
 		return nil, err
 	}
 
