@@ -29,7 +29,7 @@ func Start(port int) error {
 	v1.GET("/incidents", v1c.IncidentsGetAll)
 	v1.GET("/incidents/:id/updates", middleware.NotImplemented)
 
-	//v1.Use(middleware.IsAuthorized)
+	v1.Use(middleware.IsAuthorized)
 	{
 		v1.GET("/config", config.Config.HttpHandler)
 
