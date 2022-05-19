@@ -15,7 +15,7 @@ import (
 
 // IndexHandler is the html controller for sending the html dashboard
 func IndexHandler(c *gin.Context) {
-	services, err := core.GetServices()
+	services, err := core.GetServicesEnabled()
 	if err != nil {
 		log.Println("Error while getting the services:")
 		log.Println(err)

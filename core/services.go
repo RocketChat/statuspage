@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"time"
 
 	"github.com/RocketChat/statuscentral/config"
 	"github.com/RocketChat/statuscentral/models"
@@ -12,6 +13,11 @@ func GetServices() ([]*models.Service, error) {
 	return _dataStore.GetServices()
 }
 
+// GetServicesEnabled gets all of the services that are enabled from the storage layer
+func GetServicesEnabled() ([]*models.Service, error) {
+	return _dataStore.GetServicesEnabled()
+}
+
 // GetServiceByName gets the service by name, returns nil if not found
 func GetServiceByName(name string) (*models.Service, error) {
 	return _dataStore.GetServiceByName(name)
@@ -20,6 +26,32 @@ func GetServiceByName(name string) (*models.Service, error) {
 // CreateService creates the service in the storage layer
 func CreateService(service *models.Service) error {
 	return _dataStore.CreateService(service)
+}
+
+// GetService Get service by id
+func GetServiceByID(id int) (*models.Service, error) {
+	return _dataStore.GetServiceByID(id)
+}
+
+// UpdateService updates the service
+func UpdateService(service *models.Service) error {
+	existingService, err := _dataStore.GetServiceByID(service.ID)
+	if err != nil {
+		return err
+	}
+
+	if existingService == nil {
+		return errors.New("invalid service")
+	}
+
+	service.Regions = nil // these are added on fetch so no update should be touching
+	service.UpdatedAt = time.Now()
+
+	if err := _dataStore.UpdateService(service); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // MostCriticalServiceStatus returns the most critical service number of the services provided

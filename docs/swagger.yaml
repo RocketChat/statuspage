@@ -93,6 +93,34 @@ definitions:
       status:
         type: string
     type: object
+  models.Service:
+    properties:
+      description:
+        type: string
+      enabled:
+        type: boolean
+      group:
+        type: string
+      id:
+        type: integer
+      link:
+        type: string
+      name:
+        type: string
+      regions:
+        description: Not stored like this on DB, filled on-read when needed
+        items:
+          $ref: '#/definitions/models.Region'
+        type: array
+      status:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+    type: object
   models.ServiceUpdate:
     properties:
       name:
@@ -110,6 +138,20 @@ info:
   version: "0.1"
 paths:
   /v1/incidents:
+    get:
+      operationId: incidents-getall
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Incident'
+            type: array
+      summary: Gets list of incidents
+      tags:
+      - incident
     post:
       consumes:
       - application/json
@@ -129,6 +171,33 @@ paths:
           schema:
             $ref: '#/definitions/models.Incident'
       summary: Creates a new incident
+      tags:
+      - incident
+  /v1/incidents/{id}:
+    delete:
+      operationId: incidents-delete
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Incident'
+            type: array
+      summary: Deletes an incidents
+      tags:
+      - incident
+    get:
+      operationId: incidents-getOne
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Incident'
+      summary: Gets one incident
       tags:
       - incident
   /v1/incidents/{id}/updates:
@@ -158,6 +227,31 @@ paths:
       summary: Creates a new incident update
       tags:
       - incident
+  /v1/incidents/{id}/updates/{updateId}:
+    delete:
+      operationId: incident-update-delete
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.IncidentUpdate'
+      summary: Deletes one incident update
+      tags:
+      - incident-update
+    get:
+      operationId: incident-update-getone
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.IncidentUpdate'
+      summary: Gets one incident update
+      tags:
+      - incident-update
   /v1/regions:
     post:
       consumes:
@@ -199,4 +293,53 @@ paths:
       summary: Deletes a given region
       tags:
       - region
+  /v1/services:
+    get:
+      operationId: services-getall
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Service'
+            type: array
+      summary: Gets list of services
+      tags:
+      - services
+  /v1/services/{id}:
+    get:
+      operationId: services-getone
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Service'
+      summary: Gets one of services
+      tags:
+      - services
+    post:
+      consumes:
+      - application/json
+      operationId: services-get
+      parameters:
+      - description: Service object
+        in: body
+        name: service
+        required: true
+        schema:
+          $ref: '#/definitions/models.Service'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Service'
+      summary: Gets list of services
+      tags:
+      - services
 swagger: "2.0"
