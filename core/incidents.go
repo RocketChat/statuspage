@@ -142,26 +142,28 @@ func CreateIncident(incident *models.Incident) (*models.Incident, error) {
 
 	if incident.IsMaintenance {
 		for _, s := range incident.Services {
+
 			if err := updateServiceToStatus(s.Name, models.ServiceStatusScheduledMaintenance); err != nil {
 				return nil, err
 			}
-		}
 
-		for _, r := range incident.Regions {
-			if err := updateRegionToStatus(r.Name, models.ServiceStatusScheduledMaintenance); err != nil {
-				return nil, err
+			for _, regionCode := range s.Regions {
+				if err := updateRegionToStatus(regionCode, s.Name, models.ServiceStatusScheduledMaintenance); err != nil {
+					return nil, err
+				}
 			}
 		}
+
 	} else {
 		for _, s := range incident.Services {
 			if err := updateServiceToStatus(s.Name, s.Status); err != nil {
 				return nil, err
 			}
-		}
 
-		for _, r := range incident.Regions {
-			if err := updateRegionToStatus(r.Name, r.Status); err != nil {
-				return nil, err
+			for _, regionCode := range s.Regions {
+				if err := updateRegionToStatus(regionCode, s.Name, s.Status); err != nil {
+					return nil, err
+				}
 			}
 		}
 	}
@@ -233,11 +235,11 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*model
 			if err := updateServiceToStatus(s.Name, s.Status); err != nil {
 				return nil, err
 			}
-		}
 
-		for _, r := range update.Regions {
-			if err := updateRegionToStatus(r.Name, r.Status); err != nil {
-				return nil, err
+			for _, regionCode := range s.Regions {
+				if err := updateRegionToStatus(regionCode, s.Name, s.Status); err != nil {
+					return nil, err
+				}
 			}
 		}
 	} else {
@@ -245,11 +247,11 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*model
 			if err := updateServiceToStatus(s.Name, models.ServiceStatusNominal); err != nil {
 				return nil, err
 			}
-		}
 
-		for _, r := range incident.Regions {
-			if err := updateRegionToStatus(r.Name, models.ServiceStatusNominal); err != nil {
-				return nil, err
+			for _, regionCode := range s.Regions {
+				if err := updateRegionToStatus(regionCode, s.Name, models.ServiceStatusNominal); err != nil {
+					return nil, err
+				}
 			}
 		}
 	}

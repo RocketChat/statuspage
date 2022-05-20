@@ -18,7 +18,7 @@ type Store interface {
 	CreateRegion(region *models.Region) error
 	UpdateRegion(region *models.Region) error
 	GetRegions() ([]*models.Region, error)
-	GetRegionByName(name string) (*models.Region, error)
+	GetRegionByCodeAndServiceName(regionCode, serviceName string) (*models.Region, error)
 	DeleteRegion(id int) error
 
 	// Incidents

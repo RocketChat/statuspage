@@ -32,7 +32,7 @@ func (s *boltStore) GetRegions() ([]*models.Region, error) {
 	return regions, nil
 }
 
-func (s *boltStore) GetRegionByName(name string) (*models.Region, error) {
+func (s *boltStore) GetRegionByCodeAndServiceName(regionCode, serviceName string) (*models.Region, error) {
 	tx, err := s.Begin(false)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (s *boltStore) GetRegionByName(name string) (*models.Region, error) {
 			return nil, err
 		}
 
-		if i.Name == name {
+		if i.RegionCode == regionCode && i.ServiceName == serviceName {
 			return &i, nil
 		}
 	}
