@@ -12,9 +12,9 @@ func GetRegions() ([]*models.Region, error) {
 	return _dataStore.GetRegions()
 }
 
-// GetRegionByName gets the service by name, returns nil if not found
-func GetRegionByName(name string) (*models.Region, error) {
-	return _dataStore.GetRegionByName(name)
+// GetRegionByCodeAndServiceName gets the region by code and service name, returns nil if not found
+func GetRegionByCodeAndServiceName(regionCode, serviceName string) (*models.Region, error) {
+	return _dataStore.GetRegionByCodeAndServiceName(regionCode, serviceName)
 }
 
 // CreateRegion creates the service in the storage layer
@@ -30,6 +30,15 @@ func ValidateAndCreateRegion(region models.Region) (models.Region, error) {
 
 	if region.RegionCode == "" {
 		return region, errors.New("region needs to have region code")
+	}
+
+	existingRegion, err := GetRegionByCodeAndServiceName(region.RegionCode, region.ServiceName)
+	if err != nil {
+		return region, err
+	}
+
+	if existingRegion != nil {
+		return region, errors.New("region already exists")
 	}
 
 	service, err := GetServiceByName(region.ServiceName)
@@ -53,7 +62,7 @@ func DeleteRegion(id int) error {
 
 func createRegionsFromConfig() error {
 	for _, pendingRegion := range config.Config.Regions {
-		region, err := GetRegionByName(pendingRegion.Name)
+		region, err := GetRegionByCodeAndServiceName(pendingRegion.RegionCode, pendingRegion.ServiceName)
 		if err != nil {
 			return err
 		}
@@ -86,8 +95,8 @@ func createRegionsFromConfig() error {
 	return nil
 }
 
-func updateRegionToStatus(regionName string, status models.ServiceAndRegionStatus) error {
-	region, err := GetRegionByName(regionName)
+func updateRegionToStatus(regionCode, serviceName string, status models.ServiceAndRegionStatus) error {
+	region, err := GetRegionByCodeAndServiceName(regionCode, serviceName)
 
 	if err != nil {
 		return err
