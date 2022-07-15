@@ -4,8 +4,8 @@ import (
 	"time"
 )
 
-//IncidentUpdate holds an update for the incident
-type IncidentUpdate struct {
+//StatusUpdate holds an update for an incident or scheduled maintenance
+type StatusUpdate struct {
 	ID       int             `json:"id"`
 	Time     time.Time       `json:"time"`
 	Status   IncidentStatus  `json:"status"`

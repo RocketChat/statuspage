@@ -29,10 +29,23 @@ type Store interface {
 	DeleteIncident(id int) error
 
 	// Incident Updates
-	CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) error
-	GetIncidentUpdateByID(incidentID int, updateID int) (*models.IncidentUpdate, error)
-	GetIncidentUpdatesByIncidentID(incidentId int) ([]*models.IncidentUpdate, error)
+	CreateIncidentUpdate(incidentID int, update *models.StatusUpdate) error
+	GetIncidentUpdateByID(incidentID int, updateID int) (*models.StatusUpdate, error)
+	GetIncidentUpdatesByIncidentID(incidentID int) ([]*models.StatusUpdate, error)
 	DeleteIncidentUpdateByID(incidentID int, updateID int) error
+
+	// Scheduled Maintenance
+	CreateScheduledMaintenance(scheduledMaintenance *models.ScheduledMaintenance) error
+	UpdateScheduledMaintenance(scheduledMaintenance *models.ScheduledMaintenance) error
+	GetScheduledMaintenance(latest bool) ([]*models.ScheduledMaintenance, error)
+	GetScheduledMaintenanceByID(id int) (*models.ScheduledMaintenance, error)
+	DeleteScheduledMaintenance(id int) error
+
+	// Scheduled Maintenance Updates
+	CreateScheduledMaintenanceUpdate(maintenanceID int, update *models.StatusUpdate) error
+	GetScheduledMaintenanceUpdateByID(maintenanceID int, updateID int) (*models.StatusUpdate, error)
+	GetScheduledMaintenanceUpdatesByMaintenanceID(maintenanceID int) ([]*models.StatusUpdate, error)
+	DeleteScheduledMaintenanceUpdateByID(maintenanceID int, updateID int) error
 
 	CheckDb() error
 }

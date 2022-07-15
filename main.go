@@ -19,6 +19,7 @@ import (
 // @BasePath  /api
 func main() {
 	configFile := flag.String("configFile", "statuscentral.yaml", "Config File full path. Defaults to current folder")
+	runMigrations := flag.Bool("runMigrations", false, "Runs the migrations")
 
 	flag.Parse()
 
@@ -28,6 +29,13 @@ func main() {
 
 	if err := core.TwistItUp(); err != nil {
 		panic(err)
+	}
+
+	// Temporary
+	if *runMigrations {
+		if err := core.RunMigrations(); err != nil {
+			panic(err)
+		}
 	}
 
 	router.Start(config.Config.HTTP.Port)

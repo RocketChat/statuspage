@@ -11,10 +11,10 @@ type Incident struct {
 	Title           string              `json:"title"`
 	Status          IncidentStatus      `json:"status"`
 	Services        []ServiceUpdate     `json:"services,omitempty"`
-	Updates         []*IncidentUpdate   `json:"updates"`
+	Updates         []*StatusUpdate     `json:"updates"`
 	UpdatedAt       time.Time           `json:"updatedAt"`
-	Maintenance     IncidentMaintenance `json:"maintenance"`
-	IsMaintenance   bool                `json:"isMaintenance"`
+	Maintenance     IncidentMaintenance `json:"maintenance"`   // Deprecated
+	IsMaintenance   bool                `json:"isMaintenance"` // Deprecated
 	OriginalTweetID int64               `json:"originalTweetId"`
 	LatestTweetID   int64               `json:"latestTweetId"`
 }
@@ -34,7 +34,7 @@ func (is IncidentStatus) String() string {
 
 const (
 	//IncidentStatusScheduledMaintenance - Schedule maintenance Incident
-	IncidentStatusScheduledMaintenance IncidentStatus = "Scheduled Maintenance"
+	IncidentStatusScheduledMaintenance IncidentStatus = "Scheduled Maintenance" // deprecated
 	//IncidentStatusInvestigating - Investigating Incident
 	IncidentStatusInvestigating IncidentStatus = "Investigating"
 	//IncidentStatusIdentified - Identified cause of Incident
@@ -51,7 +51,7 @@ const (
 
 //IncidentStatuses holds all of the valid incident statuses
 var IncidentStatuses = map[string]IncidentStatus{
-	"scheduled maintenance": IncidentStatusScheduledMaintenance,
+	"scheduled maintenance": IncidentStatusScheduledMaintenance, // deprecated
 	"investigating":         IncidentStatusInvestigating,
 	"identified":            IncidentStatusIdentified,
 	"update":                IncidentStatusUpdate,

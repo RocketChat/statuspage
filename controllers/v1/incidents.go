@@ -92,14 +92,8 @@ func IncidentCreate(c *gin.Context) {
 	}
 
 	if incident.Status == models.IncidentStatusScheduledMaintenance {
-		if incident.Maintenance.Start.IsZero() {
-			badRequestHandlerDetailed(c, errors.New("schedule maintenance incident must have a start date"))
-			return
-		}
-		if incident.Maintenance.End.IsZero() {
-			badRequestHandlerDetailed(c, errors.New("schedule maintenance incident must have predicted end date"))
-			return
-		}
+		badRequestHandlerDetailed(c, errors.New("use scheduled maintenance endpoints to schedule maintenance"))
+		return
 	}
 
 	inc, err := core.CreateIncident(&incident)
@@ -164,7 +158,7 @@ func IncidentUpdateCreate(c *gin.Context) {
 		return
 	}
 
-	var update models.IncidentUpdate
+	var update models.StatusUpdate
 	if err := c.BindJSON(&update); err != nil {
 		return
 	}

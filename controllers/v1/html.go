@@ -31,6 +31,14 @@ func IndexHandler(c *gin.Context) {
 		return
 	}
 
+	scheduledMaintenance, err := core.GetScheduledMaintenance(true)
+	if err != nil {
+		log.Println("Error while getting the scheduled maintenance:")
+		log.Println(err)
+		handleIndexPageLoadingFromConfig(c)
+		return
+	}
+
 	regions, err := core.GetRegions()
 	if err != nil {
 		log.Println("Error while getting the regions:")
@@ -48,13 +56,14 @@ func IndexHandler(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"owner":              config.Config.Website.Title,
-		"backgroundColor":    config.Config.Website.HeaderBgColor,
-		"cacheBreaker":       config.Config.Website.CacheBreaker,
-		"logo":               "static/img/logo.svg",
-		"services":           services,
-		"mostCriticalStatus": core.MostCriticalServiceStatus(services, regions),
-		"incidents":          core.AggregateIncidents(incidents),
+		"owner":                config.Config.Website.Title,
+		"backgroundColor":      config.Config.Website.HeaderBgColor,
+		"cacheBreaker":         config.Config.Website.CacheBreaker,
+		"logo":                 "static/img/logo.svg",
+		"services":             services,
+		"mostCriticalStatus":   core.MostCriticalServiceStatus(services, regions),
+		"incidents":            core.AggregateIncidents(incidents),
+		"scheduledMaintenance": core.AggregateScheduledMaintenance(scheduledMaintenance),
 	})
 }
 
@@ -90,13 +99,14 @@ func handleIndexPageLoadingFromConfig(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"owner":              config.Config.Website.Title,
-		"backgroundColor":    config.Config.Website.HeaderBgColor,
-		"cacheBreaker":       config.Config.Website.CacheBreaker,
-		"logo":               "static/img/logo.svg",
-		"services":           services,
-		"mostCriticalStatus": models.ServiceStatusValues["Unknown"],
-		"incidents":          core.AggregateIncidents(make([]*models.Incident, 0)),
+		"owner":                config.Config.Website.Title,
+		"backgroundColor":      config.Config.Website.HeaderBgColor,
+		"cacheBreaker":         config.Config.Website.CacheBreaker,
+		"logo":                 "static/img/logo.svg",
+		"services":             services,
+		"mostCriticalStatus":   models.ServiceStatusValues["Unknown"],
+		"incidents":            core.AggregateIncidents(make([]*models.Incident, 0)),
+		"scheduledMaintenance": core.AggregateScheduledMaintenance(make([]*models.ScheduledMaintenance, 0)),
 	})
 }
 
@@ -157,7 +167,7 @@ func IncidentDetailHandler(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "detail.tmpl", gin.H{
+	c.HTML(http.StatusOK, "incidentDetail.tmpl", gin.H{
 		"owner":              config.Config.Website.Title,
 		"backgroundColor":    config.Config.Website.HeaderBgColor,
 		"cacheBreaker":       config.Config.Website.CacheBreaker,
@@ -165,5 +175,73 @@ func IncidentDetailHandler(c *gin.Context) {
 		"mostCriticalStatus": core.MostCriticalServiceStatus(services, regions),
 		"services":           services,
 		"incident":           incident,
+	})
+}
+
+func ScheduledMaintenanceShortRedirectHandler(c *gin.Context) {
+	if c.Param("id") == "" {
+		c.Redirect(http.StatusTemporaryRedirect, "/")
+		return
+	}
+
+	c.Redirect(http.StatusPermanentRedirect, fmt.Sprintf("/scheduled-maintenance/%s", c.Param("id")))
+}
+
+// ScheduledMaintenanceDetailHandler is the html controller for displaying the scheduled maintenance details
+func ScheduledMaintenanceDetailHandler(c *gin.Context) {
+	if c.Param("id") == "" {
+		c.Redirect(http.StatusTemporaryRedirect, "/")
+		return
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		internalErrorHandler(c, err)
+		return
+	}
+
+	services, err := core.GetServices()
+	if err != nil {
+		log.Println("Error while getting the services:")
+		log.Println(err)
+		handleIndexPageLoadingFromConfig(c)
+		return
+	}
+
+	regions, err := core.GetRegions()
+	if err != nil {
+		log.Println("Error while getting the regions:")
+		log.Println(err)
+		handleIndexPageLoadingFromConfig(c)
+		return
+	}
+
+	for _, service := range services {
+		for _, region := range regions {
+			if region.ServiceID == service.ID {
+				service.Regions = append(service.Regions, *region)
+			}
+		}
+	}
+
+	scheduledMainenance, err := core.GetScheduledMaintenanceByID(id)
+	if err != nil {
+		internalErrorHandler(c, err)
+		return
+	}
+
+	if scheduledMainenance == nil {
+		c.Redirect(http.StatusTemporaryRedirect, "/")
+		return
+	}
+
+	c.HTML(http.StatusOK, "scheduledMaintenanceDetail.tmpl", gin.H{
+		"owner":                config.Config.Website.Title,
+		"backgroundColor":      config.Config.Website.HeaderBgColor,
+		"cacheBreaker":         config.Config.Website.CacheBreaker,
+		"logo":                 "static/img/logo.svg",
+		"mostCriticalStatus":   core.MostCriticalServiceStatus(services, regions),
+		"services":             services,
+		"scheduledMaintenance": scheduledMainenance,
 	})
 }
