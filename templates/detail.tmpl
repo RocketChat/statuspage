@@ -68,12 +68,21 @@
                             </div>
                         </div>
                         {{ range $update := .incident.Updates }}
-                        <div class="flex row wrap">
-                            <span class="date">{{ $update.Time.Format "15:04"}}</span>
-                            <div class="content stretch">
-                                <div><b>{{ $update.Status }}</b> - {{$update.Message}}</div>
-                            </div>
-                        </div>
+                            {{ if eq ($update.Time.Day) (.incident.Time) }}
+                               <div class="flex row wrap">
+                                    <span class="date">{{ $update.Time.Format "15:04"}}</span>
+                                    <div class="content stretch">
+                                        <div><b>{{ $update.Status }}</b> - {{$update.Message}}</div>
+                                    </div>
+                                </div>
+                            {{ else }}
+                                <div class="flex row wrap">
+                                    <span class="date">{{ $update.Time.Format "Jan 02 15:04" }}</span>
+                                    <div class="content stretch">
+                                        <div><b>{{ $update.Status }}</b> - {{$update.Message}}</div>
+                                    </div>
+                                </div>
+                            {{ end }}
                         {{ end }}
                     </div>
                 </div>

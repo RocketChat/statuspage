@@ -199,6 +199,7 @@ h1 {
 .incidents > .line {
     border-bottom: 1px solid #e5e5e5;
     padding: 15px;
+    word-break: break-word;
 }
 
 .incidents > .line:last-child {
