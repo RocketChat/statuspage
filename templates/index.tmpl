@@ -74,7 +74,7 @@
                                                 <h3><a href="/incidents/{{ $incident.ID }}">{{ $incident.Title }}</a></h3>
 
                                                 {{ range $update := $incident.Updates }}
-                                                    {{ if eq ($update.Time.Day) ($aggregatedIncident.Time) }}
+                                                    {{ if eq ($update.Time.Day) ($aggregatedIncident.Time.Day) }}
                                                         <p><b>{{ $update.Time.Format "15:04"}} {{ $update.Status }}</b> - {{$update.Message}}</p>
                                                     {{ else }}
                                                         <p><b>{{ $update.Time.Format "Jan 02 15:04"}} {{ $update.Status }}</b> - {{$update.Message}}</p>
