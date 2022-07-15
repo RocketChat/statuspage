@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/RocketChat/statuscentral/config"
@@ -64,6 +65,22 @@ func (s *boltStore) CheckDb() error {
 	}
 
 	return tx.Rollback()
+}
+
+func (s *boltStore) Snapshot(w io.Writer) error {
+	tx, err := s.Begin(false)
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	_, err = tx.WriteTo(w)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 //itob returns an 8-byte big endian representation of v.

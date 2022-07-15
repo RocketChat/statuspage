@@ -35,3 +35,13 @@ func LivenessCheckHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK})
 }
+
+// SnapshotHandler returns snapshot of database
+func SnapshotHandler(c *gin.Context) {
+	if err := core.DBSnapshot(c.Writer); err != nil {
+		internalErrorHandler(c, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
