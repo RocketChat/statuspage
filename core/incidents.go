@@ -24,32 +24,6 @@ func GetIncidentByID(id int) (*models.Incident, error) {
 	return _dataStore.GetIncidentByID(id)
 }
 
-//SendMaintenanceTwitter sends the info about the scheduled maintenance to the offical Rocket.Chat Cloud twitter account.
-func SendMaintenanceTwitter(incident *models.Incident) (int64, error) {
-	conf := oauth1.NewConfig(config.Config.Twitter.ConsumerKey, config.Config.Twitter.ConsumerSecret)
-	token := oauth1.NewToken(config.Config.Twitter.AccessToken, config.Config.Twitter.AccessSecret)
-	http := conf.Client(oauth1.NoContext, token)
-	http.Timeout = 5 * time.Second
-
-	client := twitter.NewClient(http)
-	tmpl, err := template.ParseFiles("templates/incident/tweet/maintenance.tmpl")
-	if err != nil {
-		return 0, err
-	}
-
-	b := &bytes.Buffer{}
-	if err = tmpl.ExecuteTemplate(b, tmpl.Name(), incident); err != nil {
-		return 0, err
-	}
-
-	tweet, _, err := client.Statuses.Update(b.String(), nil)
-	if err != nil {
-		return 0, err
-	}
-
-	return tweet.ID, nil
-}
-
 //SendIncidentTwitter sends the incident info to the offical Rocket.Chat Cloud twitter account.
 func SendIncidentTwitter(incident *models.Incident) (int64, error) {
 	conf := oauth1.NewConfig(config.Config.Twitter.ConsumerKey, config.Config.Twitter.ConsumerSecret)
@@ -77,7 +51,7 @@ func SendIncidentTwitter(incident *models.Incident) (int64, error) {
 }
 
 //SendIncidentUpdateTwitter sends the incident update info to the offical Rocket.Chat Cloud twitter account.
-func SendIncidentUpdateTwitter(incident *models.Incident, update *models.IncidentUpdate) (int64, error) {
+func SendIncidentUpdateTwitter(incident *models.Incident, update *models.StatusUpdate) (int64, error) {
 	conf := oauth1.NewConfig(config.Config.Twitter.ConsumerKey, config.Config.Twitter.ConsumerSecret)
 	token := oauth1.NewToken(config.Config.Twitter.AccessToken, config.Config.Twitter.AccessSecret)
 	http := conf.Client(oauth1.NoContext, token)
@@ -120,7 +94,7 @@ func CreateIncident(incident *models.Incident) (*models.Incident, error) {
 
 	if len(incident.Updates) == 0 {
 		if incident.IsMaintenance {
-			update := models.IncidentUpdate{
+			update := models.StatusUpdate{
 				Time:   incident.Time,
 				Status: incident.Status,
 				Message: fmt.Sprintf("Starts at %s with a scheduled end at %s",
@@ -130,7 +104,7 @@ func CreateIncident(incident *models.Incident) (*models.Incident, error) {
 
 			incident.Updates = append(incident.Updates, &update)
 		} else {
-			update := models.IncidentUpdate{
+			update := models.StatusUpdate{
 				Time:    incident.Time,
 				Status:  incident.Status,
 				Message: "Initial status of " + incident.Status.String(),
@@ -173,21 +147,11 @@ func CreateIncident(incident *models.Incident) (*models.Incident, error) {
 	}
 
 	if config.Config.Twitter.Enabled {
-		if incident.Status == models.IncidentStatusScheduledMaintenance {
-			tweetID, err := SendMaintenanceTwitter(incident)
-			if err == nil {
-				incident.OriginalTweetID = tweetID
-				if err := _dataStore.UpdateIncident(incident); err != nil {
-					return nil, err
-				}
-			}
-		} else {
-			tweetID, err := SendIncidentTwitter(incident)
-			if err == nil {
-				incident.OriginalTweetID = tweetID
-				if err := _dataStore.UpdateIncident(incident); err != nil {
-					return nil, err
-				}
+		tweetID, err := SendIncidentTwitter(incident)
+		if err == nil {
+			incident.OriginalTweetID = tweetID
+			if err := _dataStore.UpdateIncident(incident); err != nil {
+				return nil, err
 			}
 		}
 	}
@@ -201,7 +165,7 @@ func DeleteIncident(id int) error {
 }
 
 // CreateIncidentUpdate creates an update for an incident
-func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*models.Incident, error) {
+func CreateIncidentUpdate(incidentID int, update *models.StatusUpdate) (*models.Incident, error) {
 	if incidentID <= 0 {
 		return nil, errors.New("invalid incident id")
 	}
@@ -270,7 +234,7 @@ func CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) (*model
 }
 
 // GetIncidentUpdates gets updates for an incident
-func GetIncidentUpdates(incidentID int) ([]*models.IncidentUpdate, error) {
+func GetIncidentUpdates(incidentID int) ([]*models.StatusUpdate, error) {
 	if incidentID <= 0 {
 		return nil, errors.New("invalid incident id")
 	}
@@ -284,7 +248,7 @@ func GetIncidentUpdates(incidentID int) ([]*models.IncidentUpdate, error) {
 }
 
 // GetIncidentUpdate gets an update for an incident
-func GetIncidentUpdate(incidentID int, updateID int) (*models.IncidentUpdate, error) {
+func GetIncidentUpdate(incidentID int, updateID int) (*models.StatusUpdate, error) {
 	if incidentID <= 0 {
 		return nil, errors.New("invalid incident id")
 	}
@@ -321,7 +285,7 @@ func DeleteIncidentUpdate(incidentID int, updateID int) error {
 
 func ensureIncidentDefaults(incident *models.Incident) {
 	if incident.Updates == nil {
-		incident.Updates = make([]*models.IncidentUpdate, 0)
+		incident.Updates = make([]*models.StatusUpdate, 0)
 	}
 
 	if incident.Status == "" {

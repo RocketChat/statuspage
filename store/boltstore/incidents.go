@@ -10,7 +10,7 @@ import (
 	bolt "github.com/etcd-io/bbolt"
 )
 
-func (s *boltStore) GetIncidents(latest bool) ([]*models.Incident, error) {
+func (s *boltStore) GetIncidents(latestOnly bool) ([]*models.Incident, error) {
 	tx, err := s.Begin(false)
 	if err != nil {
 		return nil, err
@@ -30,9 +30,13 @@ func (s *boltStore) GetIncidents(latest bool) ([]*models.Incident, error) {
 			return nil, err
 		}
 
-		if latest && i.Time.Before(to) && i.Time.After(from) {
+		if latestOnly {
+			if i.Time.Before(to) && i.Time.After(from) {
+				incidents = append(incidents, &i)
+				continue
+			}
+		} else {
 			incidents = append(incidents, &i)
-			continue
 		}
 
 	}
@@ -118,7 +122,7 @@ func (s *boltStore) DeleteIncident(id int) error {
 	})
 }
 
-func (s *boltStore) CreateIncidentUpdate(incidentID int, update *models.IncidentUpdate) error {
+func (s *boltStore) CreateIncidentUpdate(incidentID int, update *models.StatusUpdate) error {
 	tx, err := s.Begin(true)
 	if err != nil {
 		return err
@@ -162,7 +166,7 @@ func (s *boltStore) CreateIncidentUpdate(incidentID int, update *models.Incident
 	return tx.Commit()
 }
 
-func (s *boltStore) GetIncidentUpdateByID(incidentId int, updateId int) (*models.IncidentUpdate, error) {
+func (s *boltStore) GetIncidentUpdateByID(incidentId int, updateId int) (*models.StatusUpdate, error) {
 	tx, err := s.Begin(false)
 	if err != nil {
 		return nil, err
@@ -188,7 +192,7 @@ func (s *boltStore) GetIncidentUpdateByID(incidentId int, updateId int) (*models
 	return nil, nil
 }
 
-func (s *boltStore) GetIncidentUpdatesByIncidentID(incidentId int) ([]*models.IncidentUpdate, error) {
+func (s *boltStore) GetIncidentUpdatesByIncidentID(incidentId int) ([]*models.StatusUpdate, error) {
 	tx, err := s.Begin(false)
 	if err != nil {
 		return nil, err
@@ -227,7 +231,7 @@ func (s *boltStore) DeleteIncidentUpdateByID(incidentId int, updateId int) error
 		return err
 	}
 
-	updates := []*models.IncidentUpdate{}
+	updates := []*models.StatusUpdate{}
 
 	for _, update := range incident.Updates {
 		if update.ID != updateId {

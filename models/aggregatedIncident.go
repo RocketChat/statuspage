@@ -12,3 +12,12 @@ type AggregatedIncident struct {
 
 //AggregatedIncidents holds several aggregated incidents
 type AggregatedIncidents []AggregatedIncident
+
+//AggregatedScheduledMaintenance contains the scheduled maintenance aggregated
+type AggregatedScheduledMaintenance struct {
+	Time                 time.Time
+	ScheduledMaintenance []*ScheduledMaintenance
+}
+
+//AggregatedScheduledMaintenances holds several aggregated scheduled maintenances
+type AggregatedScheduledMaintenances []AggregatedScheduledMaintenance
