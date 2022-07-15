@@ -200,6 +200,13 @@ func CreateIncidentUpdate(incidentID int, update *models.StatusUpdate) (*models.
 				return nil, err
 			}
 
+			// Update the status on the incident.  Makes it easier for those utilizing api
+			for i, si := range incident.Services {
+				if s.Name == si.Name {
+					incident.Services[i].Status = s.Status
+				}
+			}
+
 			for _, regionCode := range s.Regions {
 				if err := updateRegionToStatus(regionCode, s.Name, s.Status); err != nil {
 					return nil, err
@@ -208,6 +215,8 @@ func CreateIncidentUpdate(incidentID int, update *models.StatusUpdate) (*models.
 		}
 	} else {
 		for _, s := range incident.Services {
+			s.Status = models.ServiceStatusNominal
+
 			if err := updateServiceToStatus(s.Name, models.ServiceStatusNominal); err != nil {
 				return nil, err
 			}
@@ -218,6 +227,10 @@ func CreateIncidentUpdate(incidentID int, update *models.StatusUpdate) (*models.
 				}
 			}
 		}
+	}
+
+	if err := _dataStore.UpdateIncident(incident); err != nil {
+		return nil, err
 	}
 
 	if config.Config.Twitter.Enabled {

@@ -57,5 +57,13 @@ var IncidentStatuses = map[string]IncidentStatus{
 	"update":                IncidentStatusUpdate,
 	"monitoring":            IncidentStatusMonitoring,
 	"resolved":              IncidentStatusResolved,
-	"default":               IncidentDefaultStatus,
+}
+
+var IncidentStatusArray = []IncidentStatus{
+	IncidentStatusScheduledMaintenance, // deprecated
+	IncidentStatusInvestigating,
+	IncidentStatusIdentified,
+	IncidentStatusUpdate,
+	IncidentStatusMonitoring,
+	IncidentStatusResolved,
 }
