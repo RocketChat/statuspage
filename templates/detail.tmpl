@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         {{ range $update := .incident.Updates }}
-                            {{ if eq ($update.Time.Day) (.incident.Time.Day) }}
+                            {{ if eq ($update.Time.Day) ($.incident.Time.Day) }}
                                <div class="flex row wrap">
                                     <span class="date">{{ $update.Time.Format "15:04"}}</span>
                                     <div class="content stretch">
