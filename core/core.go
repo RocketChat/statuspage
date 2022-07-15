@@ -1,6 +1,7 @@
 package core
 
 import (
+	"io"
 	"log"
 
 	"github.com/RocketChat/statuscentral/store"
@@ -34,4 +35,9 @@ func TwistItUp() error {
 // LivenessCheck checks the database to see if it responds to a ping
 func LivenessCheck() error {
 	return _dataStore.CheckDb()
+}
+
+// DBSnapshot returns snapshot of database
+func DBSnapshot(w io.Writer) error {
+	return _dataStore.Snapshot(w)
 }

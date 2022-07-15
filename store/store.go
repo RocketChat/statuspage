@@ -1,6 +1,8 @@
 package store
 
 import (
+	"io"
+
 	"github.com/RocketChat/statuscentral/models"
 )
 
@@ -35,4 +37,5 @@ type Store interface {
 	DeleteIncidentUpdateByID(incidentID int, updateID int) error
 
 	CheckDb() error
+	Snapshot(w io.Writer) error
 }
