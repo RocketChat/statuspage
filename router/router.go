@@ -77,5 +77,8 @@ func runMetricsRouter() {
 	healthMetricsRouter := gin.Default()
 	healthMetricsRouter.GET("/health", v1c.LivenessCheckHandler)
 
+	// Endpoint that will return a snapshot of the bolt database. Can be used for backup purposes
+	healthMetricsRouter.GET("/snapshot", middleware.IsAuthorized, v1c.SnapshotHandler)
+
 	go healthMetricsRouter.Run(":8080")
 }
