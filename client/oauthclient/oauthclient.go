@@ -23,7 +23,7 @@ type OAuthClient struct {
 
 // ClientConfig configuration for the OAuthClient
 type ClientConfig struct {
-	CloudURL     string
+	URL          string
 	ClientID     string
 	ClientSecret string
 	PKCE         bool
@@ -56,8 +56,8 @@ func New(config ClientConfig) (*OAuthClient, error) {
 		session: ClientSession{},
 	}
 
-	if client.config.CloudURL == "" {
-		client.config.CloudURL = "https://cloud.rocket.chat"
+	if client.config.URL == "" {
+		client.config.URL = "http://localhost:5050"
 	}
 
 	if client.config.ClientID == "" {
@@ -126,7 +126,7 @@ func (o *OAuthClient) BuildAuthorizeURL() string {
 	// Make spaces link safe
 	scope := strings.ReplaceAll(o.config.Scope, " ", "%20")
 
-	authorizeURL := o.config.CloudURL + "/authorize" +
+	authorizeURL := o.config.URL + "/authorize" +
 		"?client_id=" + o.config.ClientID +
 		"&response_type=code" +
 		"&access_type=offline" + // Actually not sure what cases this needs passed?
@@ -156,7 +156,7 @@ func (o *OAuthClient) CompleteAuthorization(code string) error {
 		formBody.Add("code_verifier", o.session.codeVerifier)
 	}
 
-	response, err := http.PostForm(o.config.CloudURL+"/api/oauth/token", formBody)
+	response, err := http.PostForm(o.config.URL+"/api/oauth/token", formBody)
 
 	if err != nil {
 		return err
@@ -198,7 +198,7 @@ func (o *OAuthClient) refreshAccessToken(scope string, store bool) (accessToken 
 		return "", errors.New("No refresh token available to use for refresh")
 	}
 
-	response, err := http.PostForm(o.config.CloudURL+"/api/oauth/token", url.Values{
+	response, err := http.PostForm(o.config.URL+"/api/oauth/token", url.Values{
 		"grant_type":    {"refresh_token"},
 		"redirect_uri":  {o.config.RedirectURI},
 		"client_id":     {o.config.ClientID},
@@ -273,7 +273,7 @@ func (o *OAuthClient) Revoke() error {
 		return nil
 	}
 
-	response, err := http.PostForm(o.config.CloudURL+"/api/oauth/revoke", url.Values{
+	response, err := http.PostForm(o.config.URL+"/api/oauth/revoke", url.Values{
 		"client_id":       {o.config.ClientID},
 		"client_secret":   {o.config.ClientSecret},
 		"token":           {o.session.RefreshToken},

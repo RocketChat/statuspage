@@ -13,7 +13,9 @@ import (
 )
 
 type State struct {
-	Session *oauthclient.ClientSession `json:"session"`
+	BaseURL    string                     `json:"baseUrl"`
+	Session    *oauthclient.ClientSession `json:"session"`
+	LoginToken string                     `json:"loginToken,omitempty"`
 }
 
 var stateFile = "$HOME/.statusctl/config"

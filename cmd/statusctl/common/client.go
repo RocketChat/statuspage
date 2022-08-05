@@ -16,7 +16,8 @@ import (
 	"github.com/RocketChat/statuscentral/client/oauthclient"
 )
 
-const clientID string = "5f67cf0bb4f1c2367b12443d"
+const oauthHost string = ""
+const clientID string = ""
 
 const scopes string = "offline_access workspace"
 
@@ -26,21 +27,30 @@ var debugMode = false
 
 var codeChan = make(chan string)
 
-func Login() error {
-	if err := initOAuthClient(); err != nil {
-		return err
+func Login(baseURL, token string) error {
+	state := State{}
+
+	if token != "" && baseURL != "" {
+		state.BaseURL = baseURL
+		state.LoginToken = token
+	} else if oauthHost != "" && clientID != "" {
+		if err := initOAuthClient(oauthHost); err != nil {
+			return err
+		}
+
+		if err := doAuthentication(); err != nil {
+			return err
+		}
+
+		s, err := oClient.GetSessionInfo()
+		if err != nil {
+			return err
+		}
+
+		state.Session = s
 	}
 
-	if err := doAuthentication(); err != nil {
-		return err
-	}
-
-	s, err := oClient.GetSessionInfo()
-	if err != nil {
-		return err
-	}
-
-	if err := SaveState(State{Session: s}); err != nil {
+	if err := SaveState(state); err != nil {
 		return err
 	}
 
@@ -48,7 +58,7 @@ func Login() error {
 }
 
 func Logout() error {
-	if err := initOAuthClient(); err != nil {
+	if err := initOAuthClient(oauthHost); err != nil {
 		return err
 	}
 
@@ -81,28 +91,36 @@ func GetStatusCentralClient() *client.Client {
 }
 
 func getClient() (*client.Client, error) {
-	if err := initOAuthClient(); err != nil {
-		return nil, err
-	}
-
 	state, err := LoadState()
 	if err != nil {
 		return nil, err
 	}
 
-	if state != nil {
-		if err := oClient.RestoreSession(*state.Session); err != nil {
-			return nil, err
-		}
-	}
-
-	if !oClient.HasActiveSession() {
-		log.Println("Invalid session")
-		return nil, errors.New("State doesn't contain active session")
+	if state == nil {
+		return nil, errors.New("no state found")
 	}
 
 	clientConfig := client.Config{
-		OAuthClient: oClient,
+		BaseURL: state.BaseURL,
+	}
+
+	if state.Session != nil {
+		if err := initOAuthClient(oauthHost); err != nil {
+			return nil, err
+		}
+
+		if err := oClient.RestoreSession(*state.Session); err != nil {
+			return nil, err
+		}
+
+		if !oClient.HasActiveSession() {
+			log.Println("Invalid session")
+			return nil, errors.New("State doesn't contain active session")
+		}
+
+		clientConfig.OAuthClient = oClient
+	} else if state.LoginToken != "" {
+		clientConfig.Token = state.LoginToken
 	}
 
 	c, err := client.New(clientConfig)
@@ -183,8 +201,9 @@ func openbrowser(url string) {
 	}
 }
 
-func initOAuthClient() error {
+func initOAuthClient(URL string) error {
 	c, err := oauthclient.New(oauthclient.ClientConfig{
+		URL:         URL,
 		ClientID:    clientID,
 		Scope:       scopes,
 		RedirectURI: "http://localhost:11899/callback",

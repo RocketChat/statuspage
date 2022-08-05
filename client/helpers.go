@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -43,15 +44,12 @@ func (c *Client) buildRequest(method string, resourceURI string, body interface{
 		return nil, err
 	}
 
-	/*token, err := c.getToken()
+	token, err := c.getToken()
 	if err != nil {
 		return nil, err
 	}
 
-	log.Println("has token but ignoring", token)*/
-
-	req.Header.Add("Authorization", "abc123def456")
-	//req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")

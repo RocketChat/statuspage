@@ -22,8 +22,6 @@ var createCmd = &cobra.Command{
 			panic(err)
 		}
 
-		log.Println("Ouch!  Lets do this!")
-
 		title := common.StringPrompt("Incident Short Descripton / Title:")
 
 		for i, statusOption := range models.IncidentStatusArray {
