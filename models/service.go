@@ -65,3 +65,12 @@ var ServiceStatuses = map[string]ServiceAndRegionStatus{
 	ServiceStatusScheduledMaintenance.ToLower(): ServiceStatusScheduledMaintenance,
 	ServiceStatusUnknown.ToLower():              ServiceStatusUnknown,
 }
+
+var ServiceStatusArray = []ServiceAndRegionStatus{
+	ServiceStatusNominal,
+	ServiceStatusDegraded,
+	ServiceStatusPartialOutage,
+	ServiceStatusOutage,
+	ServiceStatusScheduledMaintenance,
+	ServiceStatusUnknown,
+}

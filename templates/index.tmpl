@@ -178,6 +178,9 @@
 
                                                 <p><b>Description:</b> {{ $scheduledMaintenance.Description }}</p>
                                                 <p><b>Services:</b> {{ range $service := $scheduledMaintenance.Services }}{{ $service.Name }}{{ end }}</p>
+                                                <p><b>Planned Time:</b> {{ $scheduledMaintenance.PlannedStart.Format "2006/01/02 15:04"}} - {{ $scheduledMaintenance.PlannedEnd.Format "2006/01/02 15:04"}}</p>
+
+                                                <hr />
 
                                                 {{ range $update := $scheduledMaintenance.Updates }}
                                                     {{ if eq ($update.Time.Day) ($scheduledMaintenance.CreatedAt.Day) }}

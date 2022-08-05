@@ -145,6 +145,13 @@ func CreateScheduledMaintenanceUpdate(incidentID int, update *models.StatusUpdat
 				return nil, err
 			}
 
+			// Update the status on the incident.  Makes it easier for those utilizing api
+			for i, si := range scheduledMaintenance.Services {
+				if s.Name == si.Name {
+					scheduledMaintenance.Services[i].Status = s.Status
+				}
+			}
+
 			for _, regionCode := range s.Regions {
 				if err := updateRegionToStatus(regionCode, s.Name, s.Status); err != nil {
 					return nil, err
@@ -152,7 +159,8 @@ func CreateScheduledMaintenanceUpdate(incidentID int, update *models.StatusUpdat
 			}
 		}
 	} else {
-		for _, s := range scheduledMaintenance.Services {
+		for i, s := range scheduledMaintenance.Services {
+			scheduledMaintenance.Services[i].Status = models.ServiceStatusNominal
 			if err := updateServiceToStatus(s.Name, models.ServiceStatusNominal); err != nil {
 				return nil, err
 			}
@@ -163,6 +171,12 @@ func CreateScheduledMaintenanceUpdate(incidentID int, update *models.StatusUpdat
 				}
 			}
 		}
+
+		scheduledMaintenance.Completed = true
+	}
+
+	if err := _dataStore.UpdateScheduledMaintenance(scheduledMaintenance); err != nil {
+		return nil, err
 	}
 
 	if config.Config.Twitter.Enabled {
