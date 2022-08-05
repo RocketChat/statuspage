@@ -1,6 +1,6 @@
 package buildInfo
 
-var Version string = "1.0a"
+var Version string = "0.1"
 var Commit string = "local"
 
 func GetVersion() string {

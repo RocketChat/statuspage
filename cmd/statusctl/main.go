@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 }
 
 func main() {
-	rootCmd.Version = fmt.Sprintf("%s-alpha", buildInfo.GetVersion())
+	rootCmd.Version = fmt.Sprintf("%s", buildInfo.GetVersion())
 	rootCmd.AddCommand(incident.IncidentCmd)
 	rootCmd.AddCommand(maintenance.MaintenanceCmd)
 	rootCmd.Execute() //nolint:errcheck // Tech debt
