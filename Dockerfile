@@ -6,7 +6,7 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o statuscentral ./cmd/server
 
 FROM scratch as runtime
 
