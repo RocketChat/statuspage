@@ -1,0 +1,33 @@
+name: Build and Push
+
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  build-and-push:
+    name: Build And Push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          registry: registry.cloud.rocket.chat
+          username: ${{ secrets.DOCKERREGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKERREGISTRY_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: |
+            registry.cloud.rocket.chat/statuscentral:${{ github.sha }}
