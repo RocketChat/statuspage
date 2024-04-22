@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Start configures the routes and their handlers plus starts routing
+// Start configures the routes and their handlers plus starts routing
 func Start(port int) error {
 	runMetricsRouter()
 
@@ -62,7 +62,7 @@ func Start(port int) error {
 		// Scheduled Maintenance
 		v1.POST("/scheduled-maintenance", v1c.ScheduledMaintenanceCreate)
 		v1.GET("/scheduled-maintenance/:id", v1c.ScheduledMaintenanceGetOne)
-		//v1.PATCH("/scheduled-maintenance/:id", v1c.ScheduledMaintenanceUpdate)
+		v1.PATCH("/scheduled-maintenance/:id", v1c.ScheduledMaintenancePatch)
 		v1.DELETE("/scheduled-maintenance/:id", v1c.ScheduledMaintenanceDelete)
 
 		v1.POST("/scheduled-maintenance/:id/updates", v1c.ScheduledMaintenanceUpdateCreate)

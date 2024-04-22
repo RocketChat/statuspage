@@ -24,7 +24,7 @@ func GetScheduledMaintenanceByID(id int) (*models.ScheduledMaintenance, error) {
 	return _dataStore.GetScheduledMaintenanceByID(id)
 }
 
-//SendScheduledMaintenanceTwitter sends the info about the scheduled maintenance to the offical Rocket.Chat Cloud twitter account.
+// SendScheduledMaintenanceTwitter sends the info about the scheduled maintenance to the offical Rocket.Chat Cloud twitter account.
 func SendScheduledMaintenanceTwitter(incident *models.ScheduledMaintenance) (int64, error) {
 	conf := oauth1.NewConfig(config.Config.Twitter.ConsumerKey, config.Config.Twitter.ConsumerSecret)
 	token := oauth1.NewToken(config.Config.Twitter.AccessToken, config.Config.Twitter.AccessSecret)
@@ -50,7 +50,7 @@ func SendScheduledMaintenanceTwitter(incident *models.ScheduledMaintenance) (int
 	return tweet.ID, nil
 }
 
-//SendScheduledMaintenanceUpdateTwitter sends the info about the update to scheduled maintenance to the twitter
+// SendScheduledMaintenanceUpdateTwitter sends the info about the update to scheduled maintenance to the twitter
 func SendScheduledMaintenanceUpdateTwitter(scheduledMaintenance *models.ScheduledMaintenance, update *models.StatusUpdate) (int64, error) {
 	conf := oauth1.NewConfig(config.Config.Twitter.ConsumerKey, config.Config.Twitter.ConsumerSecret)
 	token := oauth1.NewToken(config.Config.Twitter.AccessToken, config.Config.Twitter.AccessSecret)
@@ -86,6 +86,10 @@ func CreateScheduledMaintenance(scheduledMaintenance *models.ScheduledMaintenanc
 
 	scheduledMaintenance.CreatedAt = time.Now()
 
+	if scheduledMaintenance.PlannedStart.Before(scheduledMaintenance.CreatedAt) || scheduledMaintenance.PlannedEnd.Before(scheduledMaintenance.CreatedAt) {
+		return nil, errors.New("start and end date must be in the future")
+	}
+
 	if err := _dataStore.CreateScheduledMaintenance(scheduledMaintenance); err != nil {
 		return nil, err
 	}
@@ -102,6 +106,55 @@ func CreateScheduledMaintenance(scheduledMaintenance *models.ScheduledMaintenanc
 	}*/
 
 	return scheduledMaintenance, nil
+}
+
+// PatchScheduledMaintenance updates the scheduled maintenance in the storage layer
+func PatchScheduledMaintenance(scheduledMaintenance *models.ScheduledMaintenance) error {
+
+	existingMaintenance, err := _dataStore.GetScheduledMaintenanceByID(scheduledMaintenance.ID)
+	if err != nil {
+		return err
+	}
+
+	if existingMaintenance == nil {
+		return errors.New("invalid scheduledMaintenance")
+	}
+
+	scheduledMaintenance.UpdatedAt = time.Now()
+
+	if scheduledMaintenance.Title == "" {
+		scheduledMaintenance.Title = existingMaintenance.Title
+	}
+
+	if scheduledMaintenance.Description == "" {
+		scheduledMaintenance.Description = existingMaintenance.Description
+	}
+
+	if scheduledMaintenance.PlannedStart.Before(scheduledMaintenance.CreatedAt) || scheduledMaintenance.PlannedEnd.Before(scheduledMaintenance.CreatedAt) {
+		return errors.New("start and end date must be in the future")
+	}
+
+	if scheduledMaintenance.PlannedStart.IsZero() {
+		scheduledMaintenance.PlannedStart = existingMaintenance.PlannedStart
+	}
+
+	if scheduledMaintenance.PlannedEnd.IsZero() {
+		scheduledMaintenance.PlannedEnd = existingMaintenance.PlannedEnd
+	}
+
+	scheduledMaintenance.Completed = existingMaintenance.Completed
+
+	scheduledMaintenance.Updates = existingMaintenance.Updates
+	scheduledMaintenance.CreatedAt = existingMaintenance.CreatedAt
+	scheduledMaintenance.Services = existingMaintenance.Services
+	scheduledMaintenance.LatestTweetID = existingMaintenance.LatestTweetID
+	scheduledMaintenance.OriginalTweetID = existingMaintenance.OriginalTweetID
+
+	if err := _dataStore.UpdateScheduledMaintenance(scheduledMaintenance); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // DeleteScheduledMaintenance removes the scheduled maintenance from the storage layer

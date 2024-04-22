@@ -9,6 +9,7 @@ import (
 // ScheduledMaintenanceInterface ScheduledMaintenance interface
 type ScheduledMaintenanceInterface interface {
 	Create(scheduledMaintenance *models.ScheduledMaintenance) (returnedScheduledMaintenance *models.ScheduledMaintenance, err error)
+	Patch(maintenanceID int, scheduledMaintenance *models.ScheduledMaintenance) (returnedScheduledMaintenance *models.ScheduledMaintenance, err error)
 	Get(id int) (scheduledMaintenance *models.ScheduledMaintenance, err error)
 	GetMultiple(latestOnly bool) (result []*models.ScheduledMaintenance, err error)
 	CreateStatusUpdate(maintenanceID int, statusUpdate *models.StatusUpdate) (returnedScheduledMaintenance *models.ScheduledMaintenance, err error)
@@ -74,6 +75,28 @@ func (i *scheduledMaintenance) GetMultiple(latestOnly bool) (result []*models.Sc
 // Create creates a scheduled maintenance
 func (i *scheduledMaintenance) Create(scheduledMaintenance *models.ScheduledMaintenance) (returnedScheduledMaintenance *models.ScheduledMaintenance, err error) {
 	req, err := i.client.buildRequest("POST", "/api/v1/scheduled-maintenance", scheduledMaintenance)
+	if err != nil {
+		return nil, err
+	}
+
+	returnedScheduledMaintenance = &models.ScheduledMaintenance{}
+
+	resp, err := i.client.do(req, returnedScheduledMaintenance)
+	if err != nil {
+		return nil, err
+	}
+
+	err = resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return returnedScheduledMaintenance, nil
+}
+
+// Patches an existing scheduled maintenance
+func (i *scheduledMaintenance) Patch(maintenanceID int, scheduledMaintenance *models.ScheduledMaintenance) (returnedScheduledMaintenance *models.ScheduledMaintenance, err error) {
+	req, err := i.client.buildRequest("PATCH", fmt.Sprintf("/api/v1/scheduled-maintenance/%d", maintenanceID), scheduledMaintenance)
 	if err != nil {
 		return nil, err
 	}

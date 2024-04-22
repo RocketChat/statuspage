@@ -31,6 +31,6 @@ func init() {
 	getCmd.Flags().StringVarP(&outputFormat, "output", "o", "list", "output format")
 	listCmd.Flags().BoolVarP(&latestOnly, "latest", "l", false, "Show latest only")
 
-	SubCommands = append(SubCommands, listCmd, describeCmd, getCmd, createCmd, updateCmd)
+	SubCommands = append(SubCommands, listCmd, describeCmd, getCmd, createCmd, updateCmd, patchCmd)
 	MaintenanceCmd.AddCommand(SubCommands...)
 }
