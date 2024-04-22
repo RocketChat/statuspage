@@ -110,6 +110,48 @@ func ScheduledMaintenanceCreate(c *gin.Context) {
 	c.JSON(http.StatusCreated, &maint)
 }
 
+// ScheduledMaintenancePatch patches a scheduled maintenance, ensuring the database is correct
+// @Summary Patches a new scheduled maintenance
+// @ID scheduled-maintenance-patch
+// @Tags scheduled-maintenance
+// @Accept json
+// @Param region body models.ScheduledMaintenance true "Scheduled Maintenance object"
+// @Produce json
+// @Success 200 {object} models.ScheduledMaintenance
+// @Router /v1/scheduled-maintenance [patch]
+func ScheduledMaintenancePatch(c *gin.Context) {
+	idParam := c.Param("id")
+
+	if idParam == "" {
+		badRequestHandlerDetailed(c, errors.New("invalid maintenance id passed"))
+		return
+	}
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		badRequestHandlerDetailed(c, errors.New("invalid maintenance id passed"))
+		return
+	}
+
+	var maintenance models.ScheduledMaintenance
+
+	if err := c.BindJSON(&maintenance); err != nil {
+		return
+	}
+
+	if id != maintenance.ID {
+		badRequestHandlerDetailed(c, errors.New("invalid maintenance id passed"))
+		return
+	}
+
+	if err := core.PatchScheduledMaintenance(&maintenance); err != nil {
+		internalErrorHandler(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, maintenance)
+}
+
 // ScheduledMaintenanceDelete removes the scheduled maintenance, ensuring the database is correct
 // @Summary Deletes scheduled maintenance
 // @ID scheduled-maintenance-delete
