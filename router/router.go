@@ -33,6 +33,7 @@ func Start(port int) error {
 	v1.GET("/incidents/:id/updates", v1c.IncidentUpdatesGetAll)
 
 	v1.GET("/scheduled-maintenance", v1c.ScheduledMaintenanceGetAll)
+	v1.GET("/scheduled-maintenance/:id/updates", v1c.ScheduledMaintenanceUpdatesGetAll)
 
 	v1.Use(middleware.IsAuthorized)
 	{

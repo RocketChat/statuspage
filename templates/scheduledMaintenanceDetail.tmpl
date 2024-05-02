@@ -64,7 +64,7 @@
                             <div class="content stretch">
                                 <h3>Title: {{ .scheduledMaintenance.Title }}</h3>
                                 <p><b>Description:</b> {{ .scheduledMaintenance.Description }}</p>
-                                <p><b>Services:</b> {{ range $service := .scheduledMaintenance.Services }}{{ $service.Name }}{{ end }}</p>
+                                <p><b>Services:</b> {{ range $service := .scheduledMaintenance.Services }}{{ $service.Name }} {{ end }}</p>
                             </div>
                         </div>
                         {{ range $update := .scheduledMaintenance.Updates }}
