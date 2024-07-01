@@ -20,7 +20,6 @@ jobs:
       - name: Login to Docker Registry
         uses: docker/login-action@v2
         with:
-          registry: registry.cloud.rocket.chat
           username: ${{ secrets.DOCKERREGISTRY_USERNAME }}
           password: ${{ secrets.DOCKERREGISTRY_PASSWORD }}
       - name: Build and push
@@ -30,4 +29,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            registry.cloud.rocket.chat/statuscentral:${{ github.sha }}
+            rocketchat/statuscentral:${{ github.sha }}
